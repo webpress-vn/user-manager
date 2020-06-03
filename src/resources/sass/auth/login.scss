@@ -1,0 +1,308 @@
+.limiter {
+    background: #f2f2f2;
+
+    input {
+        border: none;
+        outline: none;
+    }
+
+    .container-login {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+
+        .wrap-login {
+            width: 390px;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 77px 55px 33px 55px;
+            box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .wrap-account {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 77px 55px 33px 55px;
+            box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+
+            .checkbx {
+                .cbx {
+                    position: relative;
+                    padding-left: 35px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    display: flex;
+
+                    p {
+                        color: #788995;
+                        font-size: 16px;
+                        margin-top: 11px;
+                    }
+
+                    .cbx-width {
+                        width: 100%;
+                    }
+
+                    input {
+                        opacity: 0;
+                    }
+
+                    .checkmark {
+                        position: absolute;
+                        left: 0;
+                        margin-top: 4px;
+                        height: 18px;
+                        width: 18px;
+                        background-color: #fff;
+                        border: 1px solid #d6cece;
+                        border-radius: 50%;
+                    }
+
+                    .checkmark:after {
+                        content: "";
+                        position: absolute;
+                        display: none;
+                    }
+
+                }
+
+                /* On mouse-over*/
+                .cbx:hover input ~ .checkmark {
+                    background-color: #d6cece;
+                }
+
+                /* When the checkbox is checked */
+                .cbx input:checked ~ .checkmark {
+                    background-color: #fff;
+                    border: 1px solid #242424;
+                }
+
+                /* Show the checkmark when checked */
+                .cbx input:checked ~ .checkmark:after {
+                    display: block;
+                }
+
+                /* Style the checkmark/indicator */
+                .cbx .checkmark:after {
+                    width: 8px;
+                    margin: 4px;
+                    height: 8px;
+                    border-radius: 10px;
+                    background: #242424;
+                }
+
+            }
+
+            .label {
+                margin-bottom: 10px;
+            }
+
+            .option {
+                padding: 0px 5px;
+                border: none;
+                background-color: #ffffff;
+                margin-bottom: 10px;
+                height: 30px;
+            }
+
+            .form_acc {
+                border-radius: 6px;
+                border: solid 0.5px #d8d8d8;
+                background-color: #ffffff;
+                margin-bottom: 10px;
+                height: 30px;
+            }
+
+            .form_name {
+                width: 47%;
+
+                input {
+                    width: 100%;
+                    outline: none;
+                    padding: 5px 14px;
+                }
+
+            }
+
+            .date {
+                margin-right: 24px;
+
+                input {
+                    outline: none;
+                    padding: 5px 14px;
+                }
+
+            }
+
+            .account-type {
+                font-size: 14px;
+                line-height: 1.36;
+                color: #707070;
+                margin: 0 25px;
+                min-width: 90px;
+            }
+
+            .account-info {
+                font-size: 14px;
+                font-weight: 600;
+                line-height: 1.36;
+                text-align: left;
+                color: #242424;
+                margin: 0 25px;
+            }
+
+            .line {
+                border-bottom: 1px solid #d8d8d8;
+                margin: 10px 0 20px 0;
+                width: 100%;
+            }
+
+            .btn-next-comeback {
+                margin-top: 30px;
+
+                .btn-next {
+                    background-color: #ffffff;
+                    color: #242424;
+                    border: solid 1px #242424;
+                    padding: 10px 25px;
+                    border-radius: 6px;
+                    text-decoration: none;
+                    font-weight: bold;
+                }
+
+                .btn-order {
+                    text-decoration: none;
+                    background: #242424;
+                    color: white;
+                    border: solid 1px #fff;
+                    padding: 10px 42px;
+                    border-radius: 6px;
+                    font-weight: bold;
+                }
+
+                @media only screen and(max-width:991px) {
+                    padding-bottom: 50px;
+                }
+
+            }
+
+            table {
+                tr {
+                    height: 40px;
+                }
+
+            }
+
+        }
+
+        .login-form {
+            .login-form-title {
+                display: block;
+                font-weight: bold;
+                font-size: 30px;
+                color: #333333;
+                line-height: 1.2;
+                text-align: center;
+            }
+
+            .wrap-input-form-two {
+                width: 45%;
+                position: relative;
+                border-bottom: 2px solid #adadad;
+                margin-bottom: 25px;
+            }
+
+            .wrap-input {
+                width: 100%;
+                position: relative;
+                border-bottom: 2px solid #adadad;
+
+                .btn-show-pass {
+                    font-size: 15px;
+                    color: #999999;
+                    display: flex;
+                    align-items: center;
+                    position: absolute;
+                    height: 100%;
+                    top: 0;
+                    right: 0;
+                    padding-right: 5px;
+                    cursor: pointer;
+                    transition: all 0.4s;
+                }
+
+            }
+
+            .input {
+                font-size: 15px;
+                color: #555555;
+                line-height: 1.2;
+                display: block;
+                width: 100%;
+                height: 45px;
+                background: transparent;
+                padding: 0 5px;
+            }
+
+            .focus-input::after {
+                font-size: 15px;
+                color: #999999;
+                line-height: 1.2;
+                display: block;
+                width: 100%;
+                position: absolute;
+                top: 16px;
+                left: 0px;
+                padding-left: 5px;
+                transition: all 0.4s;
+            }
+
+            .text-danger {
+                margin: 10px 0 37px 0;
+            }
+
+            .container-login-form-btn {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding-top: 13px;
+
+                .wrap-login-form-btn {
+                    width: 100%;
+                    display: block;
+                    position: relative;
+                    z-index: 1;
+                    border-radius: 25px;
+                    overflow: hidden;
+                    margin: 0 auto;
+
+                    .login-form-btn {
+                        border: none;
+                        font-size: 15px;
+                        color: #fff;
+                        line-height: 1.2;
+                        text-transform: uppercase;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        padding: 0 20px;
+                        width: 100%;
+                        height: 50px;
+                        background: #242424;
+                        transition: all 0.4s;
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
