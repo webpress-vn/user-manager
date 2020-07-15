@@ -78,7 +78,7 @@ trait UserMethodsAdmin
         $query = $this->entity;
 
         $query = $this->applyConstraintsFromRequest($query, $request);
-        $query = $this->applySearchFromRequest($query, ['email', 'username'], $request);
+        $query = $this->applySearchFromRequest($query, ['email', 'username'], $request, ['userMetas' => ['value']]);
         $query = $this->applyOrderByFromRequest($query, $request);
 
         $query = $this->hasRole($request, $query);
@@ -101,7 +101,7 @@ trait UserMethodsAdmin
         $query = $this->entity;
 
         $query = $this->applyConstraintsFromRequest($query, $request);
-        $query = $this->applySearchFromRequest($query, ['email', 'username'], $request);
+        $query = $this->applySearchFromRequest($query, ['email', 'username'], $request, ['userMetas' => ['value']]);
         $query = $this->applyOrderByFromRequest($query, $request);
 
         $query = $this->hasRole($request, $query);

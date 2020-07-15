@@ -37,7 +37,7 @@ class ForgotPasswordController extends ApiController
     public function sendResetLinkEmail(Request $request)
     {
 
-        $request->validate($request, ['email' => 'required|email']);
+        $request->validate(['email' => 'required|email']);
 
         if (User::where('email', $request->get('email'))->count() == 0) {
             throw new NotFoundException('Email');
@@ -49,6 +49,7 @@ class ForgotPasswordController extends ApiController
         $response = $this->broker()->sendResetLink(
             $request->only('email')
         );
+
 
         if ($response === Password::RESET_LINK_SENT) {
             return $this->success();

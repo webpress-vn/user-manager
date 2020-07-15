@@ -10,49 +10,51 @@
     </head>
     <body>
         <div class="limiter">
-            <div class="container">
-                <div class="container-login">
-                    <div class="wrap-login">
-                        <div class="login-form validate-form">
-                            <span class="login-form-title mb-5">
-                                Forgot Password
-                            </span>
-                            @if (session('status'))
-                            <div class="text-success mt-2 mb-5">
-                                {{ session('status') }}
-                            </div>
-                            @endif
-                            <form action="{{ route('password.forgot') }}" method="POST">
-                                @csrf
-                                <div class="wrap-input">
-                                    <input class="input" type="email" placeholder="Email" name="email">
-                                    <span class="focus-input" ></span>
-                                </div>
-                                <p class="text-danger">{{ $errors->first('email') }}</p>
-                                <div class="container-login-form-btn">
-                                    <div class="wrap-login-form-btn">
-                                        <button type="submit" class="login-form-btn">
-                                        Send reset password
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                            <div class="text-center mt-5">
-                                <span class="txt1">
-                                    Don’t have an account?
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="container-login">
+                        <div class="wrap-login">
+                            <div class="login-form validate-form">
+                                <span class="login-form-title mb-5">
+                                    Quên mật khẩu
                                 </span>
-                                <a class="txt2" href="/register">
-                                    Sign Up
-                                </a>
-                                Or
-                                <a class="txt2" href="/login">
-                                    Login
-                                </a>
-                            </div>
-                            <div class="text-center mt-3">
-                                <a class="txt2" href="/">
-                                    Home Page
-                                </a>
+                                @if (session('status'))
+                                <div class="text-success mt-2 mb-5">
+                                    {{ session('status') }}
+                                </div>
+                                @endif
+                                <form action="{{ route('password.forgot') }}" method="POST">
+                                    @csrf
+                                    <div class="wrap-input">
+                                        <input class="input" type="email" placeholder="Email" name="email">
+                                        <span class="focus-input" ></span>
+                                    </div>
+                                    <p class="text-danger">{{ $errors->first('email') }}</p>
+                                    <div class="container-login-form-btn">
+                                        <div class="wrap-login-form-btn">
+                                            <button type="submit" class="login-form-btn">
+                                            Xác nhận
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="text-center mt-5">
+                                    <span class="txt1">
+                                        Chưa có tài khoản ?
+                                    </span>
+                                    <a class="txt2" href="/register">
+                                        Đăng ký
+                                    </a>
+                                    hoặc
+                                    <a class="txt2" href="/login">
+                                        Đăng nhập
+                                    </a>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a class="txt2" href="/">
+                                        Trang chủ
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

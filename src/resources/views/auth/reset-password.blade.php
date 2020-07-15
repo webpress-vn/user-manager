@@ -10,51 +10,53 @@
     </head>
     <body>
         <div class="limiter">
-            <div class="container">
-                <div class="container-login">
-                    <div class="wrap-login">
-                        <div class="login-form validate-form">
-                            <span class="login-form-title mb-5">
-                                Reset Password
-                            </span>
-                            <form action="{{ route('password.reset.post') }}" method="POST">
-                                @csrf
-                                <input type="text" name="token" value="{!! $token !!}" hidden>
-                                <input type="email" name="email" value="{!! $email !!}" hidden>
-                                <div class="wrap-input">
-                                    <input class="input" type="password" placeholder="New Password" name="password">
-                                    <span class="focus-input" ></span>
-                                </div>
-                                <p class="text-danger"></p>
-                                <div class="wrap-input">
-                                    <input class="input" type="password" placeholder="Confirm Password" name="password_confirmation">
-                                    <span class="focus-input"></span>
-                                </div>
-                                <p class="text-danger">{{ $errors->first('password') }}</p>
-                                <div class="container-login-form-btn">
-                                    <div class="wrap-login-form-btn">
-                                        <button type="submit" class="login-form-btn">
-                                        Change
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                            <div class="text-center mt-5">
-                                <span class="txt1">
-                                    Don’t have an account?
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="container-login">
+                        <div class="wrap-login">
+                            <div class="login-form validate-form">
+                                <span class="login-form-title mb-5">
+                                    Đặt lại mật khẩu
                                 </span>
-                                <a class="txt2" href="/register">
-                                    Sign Up
-                                </a>
-                                Or
-                                <a class="txt2" href="/login">
-                                    Login
-                                </a>
-                            </div>
-                            <div class="text-center mt-3">
-                                <a class="txt2" href="/">
-                                    Home Page
-                                </a>
+                                <form action="{{ route('password.reset.post') }}" method="POST">
+                                    @csrf
+                                    <input type="text" name="token" value="{!! $token !!}" hidden>
+                                    <input type="email" name="email" value="{!! $email !!}" hidden>
+                                    <div class="wrap-input">
+                                        <input class="input" type="password" placeholder="Mật khẩu mới..." name="password">
+                                        <span class="focus-input" ></span>
+                                    </div>
+                                    <p class="text-danger"></p>
+                                    <div class="wrap-input">
+                                        <input class="input" type="password" placeholder="Xác nhận mật khẩu..." name="password_confirmation">
+                                        <span class="focus-input"></span>
+                                    </div>
+                                    <p class="text-danger">{{ $errors->first('password') }}</p>
+                                    <div class="container-login-form-btn">
+                                        <div class="wrap-login-form-btn">
+                                            <button type="submit" class="login-form-btn">
+                                            Thay đổi
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="text-center mt-5">
+                                    <span class="txt1">
+                                        Không có tài khoản ?
+                                    </span>
+                                    <a class="txt2" href="/register">
+                                        Đăng ký
+                                    </a>
+                                    Or
+                                    <a class="txt2" href="/login">
+                                        Đăng nhập
+                                    </a>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a class="txt2" href="/">
+                                        Trang chủ
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

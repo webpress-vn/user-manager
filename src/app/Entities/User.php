@@ -38,15 +38,17 @@ class User extends Model implements AuthenticatableContract, JWTSubject, Transfo
      * @var array
      */
     protected $fillable = [
-        'id',
         'email',
         'username',
         'phone_number',
+        'address',
         'first_name',
         'last_name',
         'avatar',
         'password',
         'verify_token',
+        'gender',
+        'birth',
         'status',
         'email_verified_at',
         "email_verified",

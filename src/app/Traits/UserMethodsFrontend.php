@@ -60,7 +60,7 @@ trait UserMethodsFrontend
         }
 
         $query = $this->applyConstraintsFromRequest($query, $request);
-        $query = $this->applySearchFromRequest($query, ['email', 'username'], $request);
+        $query = $this->applySearchFromRequest($query, ['email', 'username'], $request, ['userMetas' => ['value']]);
         $query = $this->applyOrderByFromRequest($query, $request);
 
         $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
@@ -84,7 +84,7 @@ trait UserMethodsFrontend
         }
 
         $query = $this->applyConstraintsFromRequest($query, $request);
-        $query = $this->applySearchFromRequest($query, ['email', 'username'], $request);
+        $query = $this->applySearchFromRequest($query, ['email', 'username'], $request, ['userMetas' => ['value']]);
         $query = $this->applyOrderByFromRequest($query, $request);
         $users = $query->get();
 

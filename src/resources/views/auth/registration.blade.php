@@ -10,80 +10,82 @@
     </head>
     <body>
         <div class="limiter">
-            <div class="container">
-                <div class="container-login">
-                    <div class="wrap-account">
-                        <div class="login-form validate-form">
-                            <span class="login-form-title mb-5">
-                                Sign Up
-                            </span>
-                            <form action="{!! route('register') !!}" method="POST">
-                                @csrf
-                                <div class="d-flex justify-content-between">
-                                    <div class="wrap-input-form-two">
-                                        <input class="input" type="text" placeholder="First name" name="first_name">
-                                        <span class="focus-input" ></span>
-                                    </div>
-                                    <div class="wrap-input-form-two">
-                                        <input class="input" type="text" placeholder="Last name" name="last_name">
-                                        <span class="focus-input" ></span>
-                                    </div>
-                                </div>
-                                <div class="wrap-input">
-                                    <input class="input" type="text" placeholder="Username (*)" name="username">
-                                    <span class="focus-input" ></span>
-                                </div>
-                                <p class="text-danger">{{ $errors->first('username') }}</p>
-                                <div class="wrap-input">
-                                    <input class="input" type="password" placeholder="Password (*)" name="password">
-                                    <span class="focus-input"></span>
-                                </div>
-                                <p class="text-danger">{{ $errors->first('password') }}</p>
-                                <div class="wrap-input">
-                                    <input class="input" type="password" placeholder="Confirm Password (*)" name="password_confirmation">
-                                    <span class="focus-input"></span>
-                                </div>
-                                <p class="text-danger">{{ $errors->first('password') }}</p>
-                                <div class="wrap-input">
-                                    <input class="input" type="email" placeholder="Email" name="email">
-                                    <span class="focus-input"></span>
-                                </div>
-                                <p class="text-danger">{{ $errors->first('email') }}</p>
-                                <div class="wrap-input">
-                                    <input class="input" type="email" placeholder="Confirm Email" name="email_confirmation">
-                                    <span class="focus-input"></span>
-                                </div>
-                                <p class="text-danger">{{ $errors->first('email') }}</p>
-                                <div class="wrap-input">
-                                    <input class="input" type="text" placeholder="Address" name="address">
-                                    <span class="focus-input"></span>
-                                </div>
-                                <p class="text-danger">{{ $errors->first('address') }}</p>
-                                <div class="wrap-input">
-                                    <input class="input" type="number" placeholder="Phone number (*)" name="phone_number">
-                                    <span class="focus-input"></span>
-                                </div>
-                                <p class="text-danger">{{ $errors->first('phone_number') }}</p>
-                                <div class="container-login-form-btn">
-                                    <div class="wrap-login-form-btn">
-                                        <button type="submit" class="login-form-btn">
-                                        Register
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                            <div class="text-center mt-5">
-                                <span class="txt1">
-                                    Have a account?
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="container-login">
+                        <div class="wrap-account">
+                            <div class="login-form validate-form">
+                                <span class="login-form-title mb-5">
+                                    Đăng ký
                                 </span>
-                                <a class="txt2" href="/login">
-                                    Login
-                                </a>
-                            </div>
-                            <div class="text-center mt-3">
-                                <a class="txt2" href="/">
-                                    Home Page
-                                </a>
+                                <form action="{!! route('register') !!}" method="POST">
+                                    @csrf
+                                    <div class="d-flex justify-content-between">
+                                        <div class="wrap-input-form-two">
+                                            <input class="input" type="text" placeholder="Họ..." name="first_name">
+                                            <span class="focus-input" ></span>
+                                        </div>
+                                        <div class="wrap-input-form-two">
+                                            <input class="input" type="text" placeholder="Tên..." name="last_name">
+                                            <span class="focus-input" ></span>
+                                        </div>
+                                    </div>
+                                    <div class="wrap-input">
+                                        <input class="input" type="text" placeholder="Tên tài khoản (*)" name="username">
+                                        <span class="focus-input" ></span>
+                                    </div>
+                                    <p class="text-danger">{{ $errors->first('username') }}</p>
+                                    <div class="wrap-input">
+                                        <input class="input" type="password" placeholder="Mật khẩu (*)" name="password">
+                                        <span class="focus-input"></span>
+                                    </div>
+                                    <p class="text-danger">{{ $errors->first('password') }}</p>
+                                    <div class="wrap-input">
+                                        <input class="input" type="password" placeholder="Xác nhận mật khẩu (*)" name="password_confirmation">
+                                        <span class="focus-input"></span>
+                                    </div>
+                                    <p class="text-danger">{{ $errors->first('password') }}</p>
+                                    <div class="wrap-input">
+                                        <input class="input" type="email" placeholder="Email" name="email">
+                                        <span class="focus-input"></span>
+                                    </div>
+                                    <p class="text-danger">{{ $errors->first('email') }}</p>
+                                    <div class="wrap-input">
+                                        <input class="input" type="email" placeholder="Xác nhận Email" name="email_confirmation">
+                                        <span class="focus-input"></span>
+                                    </div>
+                                    <p class="text-danger">{{ $errors->first('email') }}</p>
+                                    <div class="wrap-input">
+                                        <input class="input" type="text" placeholder="Địa chỉ" name="address">
+                                        <span class="focus-input"></span>
+                                    </div>
+                                    <p class="text-danger">{{ $errors->first('address') }}</p>
+                                    <div class="wrap-input">
+                                        <input class="input" type="number" placeholder="Số điện thoại (*)" name="phone_number">
+                                        <span class="focus-input"></span>
+                                    </div>
+                                    <p class="text-danger">{{ $errors->first('phone_number') }}</p>
+                                    <div class="container-login-form-btn">
+                                        <div class="wrap-login-form-btn">
+                                            <button type="submit" class="login-form-btn">
+                                            Đăng ký
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="text-center mt-5">
+                                    <span class="txt1">
+                                        Đã có tài khoản ?
+                                    </span>
+                                    <a class="txt2" href="/login">
+                                        Đăng nhập
+                                    </a>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a class="txt2" href="/">
+                                        Trang chủ
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
