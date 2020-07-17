@@ -12,7 +12,10 @@
         }
     ],
     "autoload": {
-        "classmap": ["src/app/"],
+        "classmap": [
+            "src/app/",
+            "modules/roles/NF/Roles/"
+        ],
         "psr-4": {
             "VCComponent\\Laravel\\User\\": "src/app/",
             "NF\\Roles\\": "modules/roles/NF/Roles/"
