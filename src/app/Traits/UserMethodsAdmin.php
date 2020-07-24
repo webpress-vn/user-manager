@@ -7,14 +7,12 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use VCComponent\Laravel\User\Contracts\Events\UserCreatedByAdminEventContract;
 use VCComponent\Laravel\User\Contracts\Events\UserDeletedEventContract;
 use VCComponent\Laravel\User\Contracts\Events\UserUpdatedByAdminEventContract;
 use VCComponent\Laravel\User\Contracts\UserValidatorInterface;
-use VCComponent\Laravel\User\Exports\UserExports;
 use VCComponent\Laravel\User\Facades\VCCAuth;
 use VCComponent\Laravel\User\Notifications\AdminResendPasswordNotification;
 use VCComponent\Laravel\User\Notifications\AdminResendVerifiedNotification;
@@ -25,12 +23,11 @@ use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
 
 trait UserMethodsAdmin
 {
-    public function __construct(UserRepository $repository, UserValidatorInterface $validator, UserExports $exports)
+    public function __construct(UserRepository $repository, UserValidatorInterface $validator)
     {
         $this->repository = $repository;
         $this->entity     = $repository->getEntity();
         $this->validator  = $validator;
-        $this->exports    = $exports;
         $this->middleware('jwt.auth', ['except' => []]);
 
         if (isset(config('user.transformers')['user'])) {
@@ -365,19 +362,5 @@ trait UserMethodsAdmin
         $user->save();
 
         return $this->success();
-    }
-
-    public function exportExcel(Request $request)
-    {
-        $users = $this->entity;
-
-        $users = $this->hasRole($request, $users);
-        $users = $this->hasStatus($request, $users);
-        $users = $this->hasVrifyRequest($request, $users);
-        $users = $users->get();
-
-        Excel::store(new $this->exports($users), 'users.xlsx', 'excel');
-
-        return Response()->download(public_path('exports/users.xlsx'));
     }
 }
