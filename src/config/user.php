@@ -26,5 +26,15 @@ return [
             // ],
         ],
     ],
+    'role'            => [
+        'auth_middleware' => [
+            'admin' => [
+                // [
+                //     'middleware' => '',
+                //     'except'     => [],
+                // ],
+            ],
+        ],
+    ],
 
 ];

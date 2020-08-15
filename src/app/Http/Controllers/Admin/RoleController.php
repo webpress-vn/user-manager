@@ -15,6 +15,12 @@ class RoleController extends ApiController
 
     public function __construct(RoleValidator $validator)
     {
+        if (!empty(config('user.role.auth_middleware.admin'))) {
+            foreach (config('user.role.auth_middleware.admin') as $middleware) {
+                $this->middleware($middleware['middleware'], ['except' => $middleware['except']]);
+            }
+        }
+
         $this->validator = $validator;
     }
 
