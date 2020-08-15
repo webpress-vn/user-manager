@@ -2,21 +2,29 @@
 
 return [
 
-    'namespace'    => env('USER_MANAGEMENT_NAMESPACE', 'user-management'),
+    'namespace'       => env('USER_MANAGEMENT_NAMESPACE', 'user-management'),
 
-    'transformers' => [
+    'transformers'    => [
         'user' => VCComponent\Laravel\User\Transformers\UserTransformer::class,
     ],
 
-    'controllers'  => [
+    'controllers'     => [
         'admin'    => VCComponent\Laravel\User\Http\Controllers\Admin\UserController::class,
         'frontend' => VCComponent\Laravel\User\Http\Controllers\Frontend\UserController::class,
         'auth'     => VCComponent\Laravel\User\Http\Controllers\AuthController::class,
     ],
 
-    'validators'   => [
+    'validators'      => [
         'user' => VCComponent\Laravel\User\Validators\UserValidator::class,
         'auth' => VCComponent\Laravel\User\Validators\AuthValidator::class,
+    ],
+    'auth_middleware' => [
+        'admin' => [
+            // [
+            //     'middleware' => '',
+            //     'except'     => [],
+            // ],
+        ],
     ],
 
 ];

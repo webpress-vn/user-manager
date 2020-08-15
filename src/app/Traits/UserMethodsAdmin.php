@@ -35,6 +35,12 @@ trait UserMethodsAdmin
         } else {
             $this->transformer = UserTransformer::class;
         }
+
+        if (!empty(config('user.auth_middleware.admin'))) {
+            foreach (config('user.auth_middleware.admin') as $middleware) {
+                $this->middleware($middleware['middleware'], ['except' => $middleware['except']]);
+            }
+        }
     }
 
     public function hasVrifyRequest($request, $query)
@@ -73,6 +79,10 @@ trait UserMethodsAdmin
     {
 
         $query = $this->entity;
+
+        if (method_exists($this, 'withQuery')) {
+            $query = $this->withQuery($query);
+        }
 
         $query = $this->applyConstraintsFromRequest($query, $request);
         $query = $this->applySearchFromRequest($query, ['email', 'username'], $request, ['userMetas' => ['value']]);
