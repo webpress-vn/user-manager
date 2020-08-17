@@ -18,23 +18,4 @@ return [
         'user' => VCComponent\Laravel\User\Validators\UserValidator::class,
         'auth' => VCComponent\Laravel\User\Validators\AuthValidator::class,
     ],
-    'auth_middleware' => [
-        'admin' => [
-            // [
-            //     'middleware' => '',
-            //     'except'     => [],
-            // ],
-        ],
-    ],
-    'role'            => [
-        'auth_middleware' => [
-            'admin' => [
-                // [
-                //     'middleware' => '',
-                //     'except'     => [],
-                // ],
-            ],
-        ],
-    ],
-
 ];

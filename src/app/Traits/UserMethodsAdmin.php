@@ -35,12 +35,6 @@ trait UserMethodsAdmin
         } else {
             $this->transformer = UserTransformer::class;
         }
-
-        if (!empty(config('user.auth_middleware.admin'))) {
-            foreach (config('user.auth_middleware.admin') as $middleware) {
-                $this->middleware($middleware['middleware'], ['except' => $middleware['except']]);
-            }
-        }
     }
 
     public function hasVrifyRequest($request, $query)
