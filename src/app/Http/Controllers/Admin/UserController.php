@@ -2,7 +2,6 @@
 
 namespace VCComponent\Laravel\User\Http\Controllers\Admin;
 
-use App\Entities\User;
 use VCComponent\Laravel\User\Contracts\AdminUserController;
 use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 use VCComponent\Laravel\User\Traits\UserMethodsAdmin;

@@ -251,6 +251,10 @@ trait UserMethodsAdmin
             throw new PermissionDeniedException();
         }
 
+        if (method_exists($this, 'beforeDestroy')) {
+            $this->beforeDestroy($id);
+        }
+
         $this->repository->delete($id);
 
         $event = App::make(UserDeletedEventContract::class);
