@@ -31,7 +31,7 @@
         "laravel/socialite": "v4.4.0",
         "illuminate/support": "v7.0.0",
         "doctrine/dbal": "v2.10.1",
-        "laravel/ui": "2.1",
+        "laravel/ui": "2.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.4",
