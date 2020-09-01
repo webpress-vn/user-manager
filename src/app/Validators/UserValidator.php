@@ -54,5 +54,9 @@ class UserValidator extends AbstractValidator implements UserValidatorInterface
         'VERIFY_EMAIL'          => [
             'token' => ['required'],
         ],
+        'RULE_EXPORT'                          => [
+            'label'     => ['required'],
+            'extension' => ['required', 'regex:/(^xlsx$)|(^csv$)/'],
+        ],
     ];
 }

@@ -2,13 +2,16 @@
 
 namespace VCComponent\Laravel\User\Traits;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use VCComponent\Laravel\Export\Services\Export\Export;
 use VCComponent\Laravel\User\Contracts\Events\UserCreatedByAdminEventContract;
 use VCComponent\Laravel\User\Contracts\Events\UserDeletedEventContract;
 use VCComponent\Laravel\User\Contracts\Events\UserUpdatedByAdminEventContract;
@@ -64,11 +67,100 @@ trait UserMethodsAdmin
         return $query;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function export(Request $request)
+    {
+        $user = $this->getAuthenticatedUser();
+        // if (!$this->entity->ableToViewList($user)) {
+        //     throw new PermissionDeniedException();
+        // }
+
+        $this->validator->isValid($request, 'RULE_EXPORT');
+
+        $data   = $request->all();
+        $orders = $this->getReportUsers($request);
+
+        $args = [
+            'data'      => $orders,
+            'label'     => $request->label ? $data['label'] : 'Orders',
+            'extension' => $request->extension ? $data['extension'] : 'Xlsx',
+        ];
+        $export = new Export($args);
+        $url    = $export->export();
+
+        return $this->response->array(['url' => $url]);
+    }
+
+    private function getReportUsers(Request $request)
+    {
+        $fields = [
+            'users.email as `Email`',
+            'users.username as `Họ và tên',
+            'users.last_name as `Họ',
+            'users.first_name as `Tên`',
+            'users.phone_number as `Số điện thoại',
+            'users.address as `Địa chỉ chi tiết`',
+            'date_format(users.created_at, "%d.%m.%Y") as `Ngày tạo`',
+        ];
+        $fields = implode(', ', $fields);
+
+        $query = $this->entity;
+        $query         = $query->select(DB::raw($fields));
+        $query = $this->applyConstraintsFromRequest($query, $request);
+        $query = $this->applySearchFromRequest($query, ['email', 'username'], $request, ['userMetas' => ['value']]);
+        $query = $this->applyOrderByFromRequest($query, $request);
+
+        $query = $this->getFromDate($request, $query);
+        $query = $this->getToDate($request, $query);
+        $query = $this->hasStatus($request, $query);
+
+        $products = $query->get()->toArray();
+
+        return $products;
+    }
+    public function fomatDate($date)
+    {
+
+        $fomatDate = Carbon::createFromFormat('Y-m-d', $date);
+
+        return $fomatDate;
+    }
+
+    public function field($request)
+    {
+        if ($request->has('field')) {
+            if ($request->field === 'updated') {
+                $field = 'products.updated_at';
+            } elseif ($request->field === 'published') {
+                $field = 'products.published_date';
+            } elseif ($request->field === 'created') {
+                $field = 'products.created_at';
+            }
+            return $field;
+        } else {
+            throw new Exception('field requied');
+        }
+    }
+
+    public function getFromDate($request, $query)
+    {
+        if ($request->has('from')) {
+
+            $field     = $this->field($request);
+            $form_date = $this->fomatDate($request->from);
+            $query     = $query->whereDate($field, '>=', $form_date);
+        }
+        return $query;
+    }
+
+    public function getToDate($request, $query)
+    {
+        if ($request->has('to')) {
+            $field   = $this->field($request);
+            $to_date = $this->fomatDate($request->to);
+            $query   = $query->whereDate($field, '<=', $to_date);
+        }
+        return $query;
+    }
     public function index(Request $request)
     {
 
@@ -81,6 +173,9 @@ trait UserMethodsAdmin
         $query = $this->applyConstraintsFromRequest($query, $request);
         $query = $this->applySearchFromRequest($query, ['email', 'username'], $request, ['userMetas' => ['value']]);
         $query = $this->applyOrderByFromRequest($query, $request);
+
+        $query = $this->getFromDate($request, $query);
+        $query = $this->getToDate($request, $query);
 
         $query = $this->hasRole($request, $query);
         $query = $this->hasStatus($request, $query);
@@ -104,6 +199,10 @@ trait UserMethodsAdmin
         $query = $this->applyConstraintsFromRequest($query, $request);
         $query = $this->applySearchFromRequest($query, ['email', 'username'], $request, ['userMetas' => ['value']]);
         $query = $this->applyOrderByFromRequest($query, $request);
+
+        $query = $this->getFromDate($request, $query);
+        $query = $this->getToDate($request, $query);
+
 
         $query = $this->hasRole($request, $query);
         $query = $this->hasStatus($request, $query);
