@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -94,10 +95,10 @@ trait UserMethodsAdmin
     {
         $fields = [
             'users.email as `Email`',
-            'users.username as `Họ và tên',
-            'users.last_name as `Họ',
+            'users.username as `Họ và tên`',
+            'users.last_name as `Họ`',
             'users.first_name as `Tên`',
-            'users.phone_number as `Số điện thoại',
+            'users.phone_number as `Số điện thoại`',
             'users.address as `Địa chỉ chi tiết`',
             'date_format(users.created_at, "%d.%m.%Y") as `Ngày tạo`',
         ];
