@@ -37,7 +37,7 @@ $api->version('v1', function ($api) {
         $api->group(['prefix' => 'admin'], function ($api) {
             // Users
 
-
+            $api->get('users/exports', 'VCComponent\Laravel\User\Contracts\AdminUserController@export');
             $api->post('users/{id}/resend-verify-email', 'VCComponent\Laravel\User\Contracts\AdminUserController@resendVerifyEmail');
 
             $api->get('users', 'VCComponent\Laravel\User\Contracts\AdminUserController@index');
