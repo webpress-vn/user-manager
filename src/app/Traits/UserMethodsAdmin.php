@@ -114,7 +114,7 @@ trait UserMethodsAdmin
         $query = $this->getToDate($request, $query);
         $query = $this->hasStatus($request, $query);
 
-        $products = $query->get()->toArray();
+        $users = $query->get()->toArray();
 
         return $products;
     }
@@ -130,11 +130,11 @@ trait UserMethodsAdmin
     {
         if ($request->has('field')) {
             if ($request->field === 'updated') {
-                $field = 'products.updated_at';
+                $field = 'users.updated_at';
             } elseif ($request->field === 'published') {
-                $field = 'products.published_date';
+                $field = 'users.published_date';
             } elseif ($request->field === 'created') {
-                $field = 'products.created_at';
+                $field = 'users.created_at';
             }
             return $field;
         } else {
