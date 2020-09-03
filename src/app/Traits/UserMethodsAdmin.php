@@ -116,7 +116,7 @@ trait UserMethodsAdmin
 
         $users = $query->get()->toArray();
 
-        return $products;
+        return $users;
     }
     public function fomatDate($date)
     {
