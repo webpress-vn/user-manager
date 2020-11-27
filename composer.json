@@ -27,7 +27,7 @@
         }
     },
     "require": {
-        "webpress/core": "^0.0.1",
+        "webpress/core": "0.1.0",
         "laravel/socialite": "v4.4.0",
         "illuminate/support": "v7.0.0",
         "doctrine/dbal": "v2.10.1",
