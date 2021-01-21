@@ -73,11 +73,13 @@ $api->version('v1', function ($api) {
             // Roles
             $api->put('roles/status/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\RoleController@updateStatus');
             $api->get('roles/all', 'VCComponent\Laravel\User\Http\Controllers\Admin\RoleController@list');
+            //
             $api->resource('roles', 'VCComponent\Laravel\User\Http\Controllers\Admin\RoleController');
 
             // UserHasRole
             $api->post('roles/attach', AttachRoleController::class);
             $api->post('roles/detach', DetachRoleController::class);
+            //
             $api->post('roles/sync', SyncRoleController::class);
 
             // RoleHasPermission

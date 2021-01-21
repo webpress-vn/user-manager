@@ -27,6 +27,7 @@ class TestCase extends OrchestraTestCase
             UserComponentEventProvider::class,
             LaravelServiceProvider::class,
             RolesServiceProvider::class,
+            \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         ];
     }
 
