@@ -42,11 +42,12 @@ class MailResetPasswordToken extends Notification
      */
     public function toMail($notifiable)
     {
+        $reset_password_url = request()->get('reset_password_url');
         return (new CustomEmail($notifiable))
             ->to($notifiable->email)
             ->subject('Reset Password')
             ->line('Please click this button to reset password')
-            ->action('Reset Password', asset("reset-password?{$this->token}"));
+            ->action('Reset Password', "{$reset_password_url}?token={$this->token}");
     }
 
     /**

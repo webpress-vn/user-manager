@@ -6,8 +6,8 @@ use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use VCComponent\Laravel\User\Entities\User;
-use VCComponent\Laravel\Vicoders\Core\Exceptions\NotFoundException;
 use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
+use VCComponent\Laravel\Vicoders\Core\Exceptions\NotFoundException;
 
 class ForgotPasswordController extends ApiController
 {
@@ -37,7 +37,10 @@ class ForgotPasswordController extends ApiController
     public function sendResetLinkEmail(Request $request)
     {
 
-        $request->validate(['email' => 'required|email']);
+        $request->validate([
+            'email'              => 'required|email',
+            'reset_password_url' => 'required',
+        ]);
 
         if (User::where('email', $request->get('email'))->count() == 0) {
             throw new NotFoundException('Email');
@@ -49,7 +52,6 @@ class ForgotPasswordController extends ApiController
         $response = $this->broker()->sendResetLink(
             $request->only('email')
         );
-
 
         if ($response === Password::RESET_LINK_SENT) {
             return $this->success();
