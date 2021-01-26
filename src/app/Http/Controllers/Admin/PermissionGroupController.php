@@ -18,43 +18,24 @@ class PermissionGroupController extends ApiController
         $this->validator = $validator;
     }
 
-    public function hasPermissionGroup($request, $query)
-    {
-        if ($request->has('permission_group')) {
-            $query = $query->whereHas('permission_group', function ($q) use ($request) {
-                $q->whereIn('slug', explode(',', $request->get('permission_group')));
-            });
-        }
-        return $query;
-    }
-
     public function index(Request $request)
     {
         $query = PermissionGroup::query();
-        $query = $this->hasPermissionGroup($request, $query);
-
         $query = $this->applyConstraintsFromRequest($query, $request);
         $query = $this->applySearchFromRequest($query, ['name', 'slug'], $request);
         $query = $this->applyOrderByFromRequest($query, $request);
-
         $per_page = $request->has('per_page') ? (int) $request->query('per_page') : 15;
         $permissionGroup    = $query->paginate($per_page);
-
         return $this->response->paginator($permissionGroup, new PermissionGroupTransformer());
     }
 
     function list(Request $request) {
         $query = PermissionGroup::query();
-
-        $query = $this->hasPermission($request, $query);
-
         $query = $this->applyConstraintsFromRequest($query, $request);
         $query = $this->applySearchFromRequest($query, ['name', 'slug'], $request);
         $query = $this->applyOrderByFromRequest($query, $request);
-
         $per_page = $request->has('per_page') ? (int) $request->query('per_page') : 15;
         $permissionGroup    = $query->paginate($per_page);
-
         return $this->response->paginator($permissionGroup, new PermissionGroupTransformer());
     }
 

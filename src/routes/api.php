@@ -76,9 +76,9 @@ $api->version('v1', function ($api) {
             $api->resource('roles', 'VCComponent\Laravel\User\Http\Controllers\Admin\RoleController');
 
             // Permission group
-            $api->get('permissionGroup', 'VCComponent\Laravel\User\Http\Controllers\Admin\permissionGroupController@index');
-            $api->get('permissionGroup/all', 'VCComponent\Laravel\User\Http\Controllers\Admin\permissionGroupController@list');
-            $api->get('permissionGroup/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\permissionGroupController@show');
+            $api->get('permission-group', 'VCComponent\Laravel\User\Http\Controllers\Admin\PermissionGroupController@index');
+            $api->get('permission-group/all', 'VCComponent\Laravel\User\Http\Controllers\Admin\PermissionGroupController@list');
+            $api->get('permission-group/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\PermissionGroupController@show');
 
             // Permission
             $api->get('permission', 'VCComponent\Laravel\User\Http\Controllers\Admin\PermissionController@index');

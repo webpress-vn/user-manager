@@ -18,20 +18,9 @@ class PermissionController extends ApiController
         $this->validator = $validator;
     }
 
-    public function hasPermission($request, $query)
-    {
-        if ($request->has('permissions')) {
-            $query = $query->whereHas('permissions', function ($q) use ($request) {
-                $q->whereIn('slug', explode(',', $request->get('permissions')));
-            });
-        }
-        return $query;
-    }
-
     public function index(Request $request)
     {
         $query = Permission::query();
-        $query = $this->hasPermission($request, $query);
 
         $query = $this->applyConstraintsFromRequest($query, $request);
         $query = $this->applySearchFromRequest($query, ['name', 'slug'], $request);
@@ -45,8 +34,6 @@ class PermissionController extends ApiController
 
     function list(Request $request) {
         $query = Permission::query();
-
-        $query = $this->hasPermission($request, $query);
 
         $query = $this->applyConstraintsFromRequest($query, $request);
         $query = $this->applySearchFromRequest($query, ['name', 'slug'], $request);
