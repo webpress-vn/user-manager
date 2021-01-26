@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
                 "last_name" => "Admin",
                 "birth" => "1996-12-16",
                 "gender" => "1",
-                "password" =>  "secret",
+                "password" =>  bcrypt("secret"),
                 "verify_token" => ""
             ],
             [
@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
                 "last_name" => "Admin",
                 "birth" => "1996-12-16",
                 "gender" => "1",
-                "password" =>  "secret",
+                "password" =>  bcrypt("secret"),
                 "verify_token" => ""
             ]
 
