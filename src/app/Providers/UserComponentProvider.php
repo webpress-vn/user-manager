@@ -76,12 +76,6 @@ class UserComponentProvider extends ServiceProvider
             __DIR__ . '/../../resources/js/user/user.js'                      => base_path('/resources/js/user/user.js'),
             __DIR__ . '/../../resources/sass/auth/login.scss'                 => base_path('/resources/sass/auth/login.scss'),
             __DIR__ . '/../../database/seeds/UserSeeder.php'                  => base_path('/database/seeds/UserSeeder.php'),
-            __DIR__ . '/../../database/seeds/PermissionsSeeder.php'           => base_path('/database/seeds/PermissionsSeeder.php'),
-            __DIR__ . '/../../database/seeds/PermissionUserSeeder.php'        => base_path('/database/seeds/PermissionUserSeeder.php'),
-            __DIR__ . '/../../database/seeds/PermissionGroupSeeder.php'       => base_path('/database/seeds/PermissionGroupSeeder.php'),
-            __DIR__ . '/../../database/seeds/RoleSeeder.php'                  => base_path('/database/seeds/RoleSeeder.php'),
-            __DIR__ . '/../../database/seeds/RoleUserSeeder.php'              => base_path('/database/seeds/RoleUserSeeder.php'),
-            __DIR__ . '/../../database/seeds/PermissionRoleSeeder.php'        => base_path('/database/seeds/PermissionRoleSeeder.php'),
 
         ], 'config');
 

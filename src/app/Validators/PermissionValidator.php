@@ -9,7 +9,7 @@ class PermissionValidator extends AbstractValidator
     protected $rules = [
         'RULE_ADMIN_CREATE' => [
             'name' => ['required'],
-            'slug' => ['required', 'unique:roles,slug'],
+            'slug' => ['required', 'unique:pesmissions,slug'],
         ],
     ];
 }
