@@ -29,7 +29,7 @@ $api->version('v1', function ($api) {
         $api->put('me/avatar', 'VCComponent\Laravel\User\Contracts\Auth@avatar');
         $api->put('me/password', 'VCComponent\Laravel\User\Contracts\Auth@password');
         $api->post('password/email', 'VCComponent\Laravel\User\Http\Controllers\ForgotPasswordController@sendResetLinkEmail');
-        $api->put('password/reset', 'VCComponent\Laravel\User\Http\Controllers\Web\ResetPasswordController@reset');
+        $api->put('password/reset', 'VCComponent\Laravel\User\Http\Controllers\ResetPasswordController@reset');
 
         // Users
         $api->get('users', 'VCComponent\Laravel\User\Contracts\FrontendUserController@index');
