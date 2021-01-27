@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 
 class ResetPasswordController extends ApiController
 {
@@ -65,5 +65,14 @@ class ResetPasswordController extends ApiController
         event(new PasswordReset($user));
 
         $this->guard()->login($user);
+    }
+
+    protected function rules()
+    {
+        return [
+            'token'    => 'required',
+            'email'    => 'required|email',
+            'password' => 'required|confirmed|min:6',
+        ];
     }
 }
