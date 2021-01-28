@@ -75,6 +75,7 @@ class UserComponentProvider extends ServiceProvider
             __DIR__ . '/../../resources/views/auth/reset-password.blade.php'  => base_path('/resources/views/auth/reset-password.blade.php'),
             __DIR__ . '/../../resources/js/user/user.js'                      => base_path('/resources/js/user/user.js'),
             __DIR__ . '/../../resources/sass/auth/login.scss'                 => base_path('/resources/sass/auth/login.scss'),
+            __DIR__ . '/../../database/seeds/UserSeeder.php'                  => base_path('/database/seeds/UserSeeder.php'),
 
         ], 'config');
 

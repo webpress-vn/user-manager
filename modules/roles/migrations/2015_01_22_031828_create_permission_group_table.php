@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-class CreatePermissionsTable extends Migration
+
+class CreatePermissionGroupTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,14 +13,11 @@ class CreatePermissionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('permissions', function (Blueprint $table) {
+        Schema::create('permission_group', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('description')->nullable();
-            $table->string('model')->nullable();
             $table->timestamps();
-
         });
     }
 
@@ -30,6 +28,6 @@ class CreatePermissionsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('permissions');
+        Schema::dropIfExists('permission_group');
     }
 }

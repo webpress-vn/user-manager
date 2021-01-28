@@ -75,6 +75,16 @@ $api->version('v1', function ($api) {
             $api->get('roles/all', 'VCComponent\Laravel\User\Http\Controllers\Admin\RoleController@list');
             $api->resource('roles', 'VCComponent\Laravel\User\Http\Controllers\Admin\RoleController');
 
+            // Permission group
+            $api->get('permission-group', 'VCComponent\Laravel\User\Http\Controllers\Admin\PermissionGroupController@index');
+            $api->get('permission-group/all', 'VCComponent\Laravel\User\Http\Controllers\Admin\PermissionGroupController@list');
+            $api->get('permission-group/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\PermissionGroupController@show');
+
+            // Permission
+            $api->get('permission', 'VCComponent\Laravel\User\Http\Controllers\Admin\PermissionController@index');
+            $api->get('permission/all', 'VCComponent\Laravel\User\Http\Controllers\Admin\PermissionController@list');
+            $api->get('permission/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\PermissionController@show');
+
             // UserHasRole
             $api->post('roles/attach', AttachRoleController::class);
             $api->post('roles/detach', DetachRoleController::class);

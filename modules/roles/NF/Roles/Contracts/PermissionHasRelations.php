@@ -17,4 +17,6 @@ interface PermissionHasRelations
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function users();
+
+
 }
