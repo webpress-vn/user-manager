@@ -172,7 +172,7 @@ class UserSeeder extends Seeder
 
     protected function createPermissionRole()
     {
-        $roles = Role::get();
+        $roles = Role::limit(2)->get();
 
         foreach ($roles as $role) {
             $permissions = Permission::get();
@@ -186,7 +186,7 @@ class UserSeeder extends Seeder
         $users = User::get();
 
         foreach ($users as $user) {
-            $roles = Role::get();
+            $roles = Role::limit(2)->get();
             foreach ($roles as $role) {
                 $user->attachRole($role->id);
             }
