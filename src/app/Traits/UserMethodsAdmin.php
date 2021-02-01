@@ -375,7 +375,7 @@ trait UserMethodsAdmin
         $data = $request->all();
 
         $query = $this->entity;
-        $query->whereIn('id', $data['item_ids'])->update(['status' => $data['status']]);
+        $query->whereIn('id', $data['ids'])->update(['status' => $data['status']]);
 
         return $this->success();
     }

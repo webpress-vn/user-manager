@@ -22,7 +22,7 @@ class RoleTransformer extends TransformerAbstract
             'status'      => $model->status,
             'description' => $model->description,
             'level'       => $model->level,
-            'status'      =>$model->status,
+            'status'      => $model->status,
             'timestamps'  => [
                 'created_at' => $model->created_at,
                 'updated_at' => $model->updated_at,

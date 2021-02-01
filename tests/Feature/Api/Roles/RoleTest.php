@@ -243,4 +243,29 @@ class RoleTest extends TestCase
         $response->assertJson(['data' => $check]);
         $this->assertDatabaseHas('roles', $check);
     }
+
+      /**
+     * @test
+     */
+    public function can_update_a_role_status_by_admin_router()
+    {
+        $role = factory(Role::class)->create()->toArray();
+
+        $response = $this->get('api/user-management/admin/roles/' . $role['id']);
+
+        $response->assertJson([ 'data' => ['status' => 0]]);
+
+        $request  = ['status' => 1];
+        $response = $this->put('api/user-management/admin/roles/'. $role['id'] .'/status', $request);
+
+        $response->assertOk();
+        $response->assertJson(['success' => 'true']);
+
+        $role['status'] = 1;
+
+        unset($role['updated_at']);
+        unset($role['created_at']);
+
+        $this->assertDatabaseHas('roles', $role);
+    }
 }

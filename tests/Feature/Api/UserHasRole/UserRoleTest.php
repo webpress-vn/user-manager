@@ -127,28 +127,79 @@ class UserRoleTest extends TestCase
         });
     }
 
-    // /**
-    //  * @test
-    //  */
-    // public function can_sync_role_to_user_by_admin_router()
-    // {
-    //     $dataLogin = ['email' => 'integrationTest@gmail.com', 'password'=> '123456789&'];
-    //     $admin  = factory(User::class)->create();
+    /**
+     * @test
+     */
+    public function can_sync_role_to_user_by_admin_router()
+    {
+        $dataLogin = ['email' => 'integrationTest@gmail.com', 'password'=> '123456789&'];
+        $admin  = factory(User::class)->create();
        
-    //     $request = [];
+        $request = [];
 
-    //     $response = $this->json('POST', 'api/user-management/admin/roles/sync', $request);
+        $response = $this->json('POST', 'api/user-management/admin/roles/sync', $request);
 
-    //     $this->assertValidation($response, 'user_id', 'The user id field is required.');
-    //     $this->assertValidation($response, 'role_ids', 'The role ids field is required.');
+        $this->assertValidation($response, 'user_id', 'The user id field is required.');
+        $this->assertValidation($response, 'role_ids', 'The role ids field is required.');
 
 
-    //     $user  = factory(User::class)->create();
-    //     $roles = factory(Role::class, 3)->create();
+        $user  = factory(User::class)->create();
+        $roles = factory(Role::class, 3)->create();
 
-    //     $this->attachRolesToUser($user, $roles);
-    //     // dd('ko');
-    //     $response = $this->actingAs($admin)->get('api/user-management/admin/users/'. $user->id. '?include=roles');
-    //     dd($response->Json());
-    // }
+        $this->attachRolesToUser($user, $roles);
+        
+        $token = $this->loginToken();
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->get('api/user-management/admin/users/'. $user->id. '?include=roles');
+
+        $response->assertOk();
+        
+        $roles->map(function($e) use ($user) {
+            $this->assertDatabaseHas('role_user', [
+                'user_id' => $user->id,
+                'role_id' => $e->id,
+            ]);
+        });
+
+        $rolesUpdate = factory(Role::class, 2)->create();
+
+        $roles_ids = $rolesUpdate->map(function($e) {
+            return $e->id;
+        })->toArray();
+
+        $request = [
+            'user_id'  => $user->id,
+            'role_ids' => $roles_ids 
+        ];
+
+        $response = $this->json('POST', 'api/user-management/admin/roles/sync', $request);
+
+        $response->assertOk();
+        
+        $rolesUpdate->map(function($e) use ($user){
+            $this->assertDatabaseHas('role_user', [
+                'user_id' => $user->id,
+                'role_id' => $e->id,
+            ]);
+        });
+
+        $roles->map(function($e) use ($user) {
+            $this->assertDatabaseMissing('role_user', [
+                'user_id' => $user->id,
+                'role_id' => $e->id,
+            ]);
+        });
+    }
+
+    protected function loginToken()
+    {
+        $dataLogin = ['username' => 'admin', 'password' => '123456789', 'email' => 'admin@test.com'];
+        $user      = factory(User::class)->make($dataLogin);
+        $user->save();
+
+        $login = $this->json('POST', 'api/user-management/login', $dataLogin);
+        $token = $login->Json()['token'];
+
+        return $token;
+    }
 }

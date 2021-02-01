@@ -32,7 +32,8 @@ class InformationController extends Controller
             $date_of_birth = Carbon::parse($birthday)->calendar();
         }
 
-        return view('auth.account', compact('gender', 'date', 'date_of_birth'));
+        $view = config('user.test_mode') === true ? 'userTest::account' : 'auth.account';
+        return view($view, compact('gender', 'date', 'date_of_birth'));
     }
 
     public function editInfo(Request $request)
@@ -62,7 +63,7 @@ class InformationController extends Controller
         if ($validator->fails()):
             return redirect()->back()->withErrors($validator)->withInput();
         endif;
-
+        
         $user->update($data);
 
         return redirect()->back()->with('messages', ('Thay đổi thông tin cá nhân thành công !'));

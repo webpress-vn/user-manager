@@ -15,17 +15,17 @@ class ResendVerifyController extends Controller
     public function __construct(UserRepository $repository)
     {
         $this->repository = $repository;
+        $this->viewError  = config('user.test_mode') === true ? view('userTest::errow-verify') : view('auth.errow-verify');
 
     }
+    
     public function view(Request $request)
     {
-
         $user = User::find($request->id);
 
         if (!$user) {
-            return view('auth.errow-verify');
+            return $this->viewError;
         }
-
 
         if (!Auth::check()) {
             Auth::login($user, true);
@@ -35,14 +35,11 @@ class ResendVerifyController extends Controller
             if ($user->verify_token === $request->get('token')) {
                 $user = $this->repository->verifyEmail($user);
             } else {
-                return view('auth.errow-verify');
+                return $this->viewError;
             }
         } else {
-            return view('auth.errow-verify');
+            return $this->viewError;
         }
-
-
-
 
         return view('auth.verify');
     }
@@ -52,7 +49,7 @@ class ResendVerifyController extends Controller
         $user = $this->repository->find($request->id);
 
         if (!$user) {
-            return view('auth.errow-verify');
+            return $this->viewError;
         }
         if ($user->email_verified === 0) {
 
@@ -64,13 +61,13 @@ class ResendVerifyController extends Controller
 
                 $user->save();
             } else {
-                return view('auth.errow-verify');
+                return $this->viewError;
             }
         } else {
-            return view('auth.errow-verify');
+            return $this->viewError;
         }
 
-        return view('auth.errow-verify');
+        return $this->viewError;
 
     }
 }

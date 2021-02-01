@@ -28,17 +28,18 @@ $api->version('v1', function ($api) {
         $api->get('me', 'VCComponent\Laravel\User\Contracts\Auth@me');
         $api->put('me/avatar', 'VCComponent\Laravel\User\Contracts\Auth@avatar');
         $api->put('me/password', 'VCComponent\Laravel\User\Contracts\Auth@password');
+
         $api->post('password/email', 'VCComponent\Laravel\User\Http\Controllers\ForgotPasswordController@sendResetLinkEmail');
         $api->put('password/reset', 'VCComponent\Laravel\User\Http\Controllers\Web\ResetPasswordController@reset');
 
         // Users
-        $api->get('users', 'VCComponent\Laravel\User\Contracts\FrontendUserController@index');
-        $api->get('users/all', 'VCComponent\Laravel\User\Contracts\FrontendUserController@list');
-        $api->get('users/{id}', 'VCComponent\Laravel\User\Contracts\FrontendUserController@show');
-        $api->put('users/{id}', 'VCComponent\Laravel\User\Contracts\FrontendUserController@update');
-        $api->put('users/{id}/verify-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@verifyEmail');
-        $api->get('users/{id}/is-verified-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@isVerifiedEmail');
-        $api->post('users/{id}/resend-verify-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@resendVerifyEmail');
+        // $api->get('users', 'VCComponent\Laravel\User\Contracts\FrontendUserController@index');
+        // $api->get('users/all', 'VCComponent\Laravel\User\Contracts\FrontendUserController@list');
+        // $api->get('users/{id}', 'VCComponent\Laravel\User\Contracts\FrontendUserController@show');
+        // $api->put('users/{id}', 'VCComponent\Laravel\User\Contracts\FrontendUserController@update');
+        // $api->put('users/{id}/verify-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@verifyEmail');
+        // $api->get('users/{id}/is-verified-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@isVerifiedEmail');
+        // $api->post('users/{id}/resend-verify-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@resendVerifyEmail');
 
         // $api->put('verify?id={id}&token={verify_token}', 'AccountController@view');
 
@@ -59,27 +60,25 @@ $api->version('v1', function ($api) {
             $api->put('users/{id}', 'VCComponent\Laravel\User\Contracts\AdminUserController@update');
             $api->delete('users/{id}', 'VCComponent\Laravel\User\Contracts\AdminUserController@destroy');
             $api->put('users/status/bulk', 'VCComponent\Laravel\User\Contracts\AdminUserController@bulkUpdateStatus');
-            $api->put('users/status/{id}', 'VCComponent\Laravel\User\Contracts\AdminUserController@status');
+            $api->put('users/{id}/status', 'VCComponent\Laravel\User\Contracts\AdminUserController@status');
             $api->put('users/{id}/password', 'VCComponent\Laravel\User\Contracts\AdminUserController@changePassword');
 
             // Statuses
-            $api->get('statuses', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@index');
-            $api->get('statuses/all', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@list');
-            $api->get('statuses/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@show');
-            $api->post('statuses', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@store');
-            $api->put('statuses/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@update');
-            $api->delete('statuses/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@destroy');
+            // $api->get('statuses', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@index');
+            // $api->get('statuses/all', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@list');
+            // $api->get('statuses/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@show');
+            // $api->post('statuses', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@store');
+            // $api->put('statuses/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@update');
+            // $api->delete('statuses/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\StatusController@destroy');
 
             // Roles
-            $api->put('roles/status/{id}', 'VCComponent\Laravel\User\Http\Controllers\Admin\RoleController@updateStatus');
+            $api->put('roles/{id}/status', 'VCComponent\Laravel\User\Http\Controllers\Admin\RoleController@updateStatus');
             $api->get('roles/all', 'VCComponent\Laravel\User\Http\Controllers\Admin\RoleController@list');
-            //
             $api->resource('roles', 'VCComponent\Laravel\User\Http\Controllers\Admin\RoleController');
 
             // UserHasRole
             $api->post('roles/attach', AttachRoleController::class);
             $api->post('roles/detach', DetachRoleController::class);
-            //
             $api->post('roles/sync', SyncRoleController::class);
 
             // RoleHasPermission

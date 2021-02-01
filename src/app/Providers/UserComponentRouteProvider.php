@@ -24,9 +24,6 @@ class UserComponentRouteProvider extends ServiceProvider
      */
     public function boot(\Illuminate\Routing\Router $router)
     {
-
-        $router->aliasMiddleware('JWTAuth', \Tymon\JWTAuth\Http\Middleware\Authenticate::class);
-        $router->aliasMiddleware('JWTFactory', \Tymon\JWTAuth\Facades\JWTFactory::class);
         $this->loadRoutesFrom(__DIR__ . '/../../routes/api.php');
         $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php');
     }
