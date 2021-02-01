@@ -4,6 +4,7 @@ use VCComponent\Laravel\User\Http\Controllers\Admin\AttachPermissionController;
 use VCComponent\Laravel\User\Http\Controllers\Admin\AttachRoleController;
 use VCComponent\Laravel\User\Http\Controllers\Admin\DetachPermissionController;
 use VCComponent\Laravel\User\Http\Controllers\Admin\DetachRoleController;
+use VCComponent\Laravel\User\Http\Controllers\Admin\SyncPermissionController;
 use VCComponent\Laravel\User\Http\Controllers\Admin\SyncRoleController  ;
 
 /*
@@ -93,6 +94,7 @@ $api->version('v1', function ($api) {
             // RoleHasPermission
             $api->post('permissions/attach', AttachPermissionController::class);
             $api->post('permissions/detach', DetachPermissionController::class);
+            $api->post('permissions/sync', SyncPermissionController::class);
         });
     });
 });
