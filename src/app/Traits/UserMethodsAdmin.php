@@ -184,7 +184,7 @@ trait UserMethodsAdmin
         $query = $this->hasVrifyRequest($request, $query);
 
         $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
-        $users    = $query->where('username','!=', User::SUPER_ADMIN_USER)->paginate($per_page);
+        $users    = $query->where('username','<>', User::SUPER_ADMIN_USER)->paginate($per_page);
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -210,7 +210,7 @@ trait UserMethodsAdmin
         $query = $this->hasStatus($request, $query);
         $query = $this->hasVrifyRequest($request, $query);
 
-        $users = $query->where('username','!=', User::SUPER_ADMIN_USER)->get();
+        $users = $query->where('username','<>', User::SUPER_ADMIN_USER)->get();
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -282,19 +282,12 @@ trait UserMethodsAdmin
      */
     public function show(Request $request, $id)
     {
-
+        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
         $user = $this->getAuthenticatedUser();
-
-        if (!$user->ableToShow($id)) {
+        if (!$user->ableToShow($id) || $id == $superadmin->id) {
             throw new PermissionDeniedException();
         }
-        //if($user->id != 1 || $user->username !== User::SUPER_ADMIN_USER)
-        if($id != User::SUPER_ADMIN_ID) {
-            $user = $this->repository->find($id);
-        }
-        else {
-            $user = $this->getAuthenticatedUser();
-        }
+
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
         } else {
@@ -312,8 +305,10 @@ trait UserMethodsAdmin
      */
     public function update(Request $request, $id)
     {
+        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToUpdateProfile($id)) {
+
+        if (!$user->ableToUpdateProfile($id) || $id == $superadmin->id) {
             throw new PermissionDeniedException();
         }
 
@@ -324,10 +319,7 @@ trait UserMethodsAdmin
         $this->validator->isSchemaValid($data['schema'], $schema_rules);
 
         VCCAuth::isExists($request, $id);
-        if($id != User::SUPER_ADMIN_ID) {
-            $user = $this->repository->update($data['default'], $id);
-        }
-
+        $user = $this->repository->update($data['default'], $id);
 
         if ($request->has('status')) {
             $user->status = $request->get('status');
@@ -354,17 +346,16 @@ trait UserMethodsAdmin
      */
     public function destroy($id)
     {
+        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToDelete($id)) {
+        if (!$user->ableToDelete($id) || $id == $superadmin->id) {
             throw new PermissionDeniedException();
         }
 
         if (method_exists($this, 'beforeDestroy')) {
             $this->beforeDestroy($id);
         }
-        if($id != User::SUPER_ADMIN_ID) {
-            $this->repository->delete($id);
-        }
+        $this->repository->delete($id);
         $event = App::make(UserDeletedEventContract::class);
         Event::dispatch($event);
 
