@@ -62,6 +62,7 @@ class User extends Model implements AuthenticatableContract, JWTSubject, Transfo
     protected $hidden = [
         'password',
     ];
+    public const SUPER_ADMIN_USER = 'super_admin';
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

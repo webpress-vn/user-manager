@@ -24,6 +24,7 @@ use VCComponent\Laravel\User\Repositories\UserRepository;
 use VCComponent\Laravel\User\Transformers\UserTransformer;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\NotFoundException;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
+use VCComponent\Laravel\User\Entities\User;
 
 trait UserMethodsAdmin
 {
@@ -183,7 +184,7 @@ trait UserMethodsAdmin
         $query = $this->hasVrifyRequest($request, $query);
 
         $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
-        $users    = $query->paginate($per_page);
+        $users    = $query->where('username','<>', User::SUPER_ADMIN_USER)->paginate($per_page);
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -209,7 +210,7 @@ trait UserMethodsAdmin
         $query = $this->hasStatus($request, $query);
         $query = $this->hasVrifyRequest($request, $query);
 
-        $users = $query->get();
+        $users = $query->where('username','<>', User::SUPER_ADMIN_USER)->get();
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -281,19 +282,17 @@ trait UserMethodsAdmin
      */
     public function show(Request $request, $id)
     {
+        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToShow($id)) {
+        if (!$user->ableToShow($id) || $id == $superadmin->id) {
             throw new PermissionDeniedException();
         }
-
-        $user = $this->repository->find($id);
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
         } else {
             $transformer = new $this->transformer;
         }
-
         return $this->response->item($user, $transformer);
     }
 
@@ -306,8 +305,10 @@ trait UserMethodsAdmin
      */
     public function update(Request $request, $id)
     {
+        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToUpdateProfile($id)) {
+
+        if (!$user->ableToUpdateProfile($id) || $id == $superadmin->id) {
             throw new PermissionDeniedException();
         }
 
@@ -318,7 +319,6 @@ trait UserMethodsAdmin
         $this->validator->isSchemaValid($data['schema'], $schema_rules);
 
         VCCAuth::isExists($request, $id);
-
         $user = $this->repository->update($data['default'], $id);
 
         if ($request->has('status')) {
@@ -346,17 +346,16 @@ trait UserMethodsAdmin
      */
     public function destroy($id)
     {
+        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToDelete($id)) {
+        if (!$user->ableToDelete($id) || $id == $superadmin->id) {
             throw new PermissionDeniedException();
         }
 
         if (method_exists($this, 'beforeDestroy')) {
             $this->beforeDestroy($id);
         }
-
         $this->repository->delete($id);
-
         $event = App::make(UserDeletedEventContract::class);
         Event::dispatch($event);
 
