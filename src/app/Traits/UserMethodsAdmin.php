@@ -24,6 +24,7 @@ use VCComponent\Laravel\User\Repositories\UserRepository;
 use VCComponent\Laravel\User\Transformers\UserTransformer;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\NotFoundException;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
+use VCComponent\Laravel\User\Entities\User;
 
 trait UserMethodsAdmin
 {
@@ -183,7 +184,7 @@ trait UserMethodsAdmin
         $query = $this->hasVrifyRequest($request, $query);
 
         $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
-        $users    = $query->where('username','!=','super_admin')->paginate($per_page);
+        $users    = $query->where('username','!=', User::SUPER_ADMIN_USER)->paginate($per_page);
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -209,7 +210,7 @@ trait UserMethodsAdmin
         $query = $this->hasStatus($request, $query);
         $query = $this->hasVrifyRequest($request, $query);
 
-        $users = $query->where('username','!=','super_admin')->get();
+        $users = $query->where('username','!=', User::SUPER_ADMIN_USER)->get();
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -283,18 +284,23 @@ trait UserMethodsAdmin
     {
 
         $user = $this->getAuthenticatedUser();
+
         if (!$user->ableToShow($id)) {
             throw new PermissionDeniedException();
         }
-
-        $user = $this->repository->find($id);
+        //if($user->id != 1 || $user->username !== User::SUPER_ADMIN_USER)
+        if($id != User::SUPER_ADMIN_ID) {
+            $user = $this->repository->find($id);
+        }
+        else {
+            $user = $this->getAuthenticatedUser();
+        }
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
         } else {
             $transformer = new $this->transformer;
         }
-        if($user->id != 1 || $user->username != 'super_admin')
-            return $this->response->item($user, $transformer);
+        return $this->response->item($user, $transformer);
     }
 
     /**
@@ -318,8 +324,10 @@ trait UserMethodsAdmin
         $this->validator->isSchemaValid($data['schema'], $schema_rules);
 
         VCCAuth::isExists($request, $id);
+        if($id != User::SUPER_ADMIN_ID) {
+            $user = $this->repository->update($data['default'], $id);
+        }
 
-        $user = $this->repository->update($data['default'], $id);
 
         if ($request->has('status')) {
             $user->status = $request->get('status');
@@ -354,9 +362,9 @@ trait UserMethodsAdmin
         if (method_exists($this, 'beforeDestroy')) {
             $this->beforeDestroy($id);
         }
-
-        $this->repository->delete($id);
-
+        if($id != User::SUPER_ADMIN_ID) {
+            $this->repository->delete($id);
+        }
         $event = App::make(UserDeletedEventContract::class);
         Event::dispatch($event);
 
