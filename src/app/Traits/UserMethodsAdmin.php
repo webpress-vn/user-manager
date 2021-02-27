@@ -183,7 +183,7 @@ trait UserMethodsAdmin
         $query = $this->hasVrifyRequest($request, $query);
 
         $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
-        $users    = $query->paginate($per_page);
+        $users    = $query->where('username','!=','super_admin')->paginate($per_page);
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -209,7 +209,7 @@ trait UserMethodsAdmin
         $query = $this->hasStatus($request, $query);
         $query = $this->hasVrifyRequest($request, $query);
 
-        $users = $query->get();
+        $users = $query->where('username','!=','super_admin')->get();
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -281,20 +281,20 @@ trait UserMethodsAdmin
      */
     public function show(Request $request, $id)
     {
+
         $user = $this->getAuthenticatedUser();
         if (!$user->ableToShow($id)) {
             throw new PermissionDeniedException();
         }
 
         $user = $this->repository->find($id);
-
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
         } else {
             $transformer = new $this->transformer;
         }
-
-        return $this->response->item($user, $transformer);
+        if($user->id != 1 || $user->username != 'super_admin')
+            return $this->response->item($user, $transformer);
     }
 
     /**
