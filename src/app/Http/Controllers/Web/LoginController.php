@@ -2,11 +2,11 @@
 
 namespace VCComponent\Laravel\User\Http\Controllers\Web;
 
-use VCComponent\Laravel\User\Entities\User;
-use Illuminate\Routing\Controller;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use VCComponent\Laravel\User\Entities\User;
 
 class LoginController extends Controller
 {
@@ -42,7 +42,8 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        return view('auth.login');
+        $view = config('user.test_mode') === true ? view('userTest::login') : view('auth.login');
+        return $view;
     }
 
     public function username()

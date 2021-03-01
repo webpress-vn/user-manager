@@ -18,4 +18,5 @@ return [
         'user' => VCComponent\Laravel\User\Validators\UserValidator::class,
         'auth' => VCComponent\Laravel\User\Validators\AuthValidator::class,
     ],
+    'test_mode' => false
 ];
