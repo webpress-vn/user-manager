@@ -26,8 +26,6 @@ class Auth implements AuthHelperContract
     {
         $this->validator->isValid($request, 'LOGIN');
 
-
-
         $user = $this->repository->findByField('username', $request->get('username'))->first();
 
         if (!$user) {

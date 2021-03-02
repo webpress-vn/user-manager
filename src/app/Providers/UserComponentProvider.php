@@ -88,6 +88,7 @@ class UserComponentProvider extends ServiceProvider
             ]);
         }
 
+        $this->loadViewsFrom(__DIR__ . '/../../../tests/Stubs/views', 'userTest');
         $this->registerMiddleware();
     }
 

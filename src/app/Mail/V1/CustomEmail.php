@@ -65,7 +65,7 @@ class CustomEmail extends Mailable
      * @return void
      */
     public function __construct($notifiable)
-    {
+    {   
         $this->notifiable = $notifiable;
     }
 
