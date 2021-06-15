@@ -25,6 +25,7 @@ $api->version('v1', function ($api) {
         // Auth
         $api->post('register', 'VCComponent\Laravel\User\Contracts\FrontendUserController@store');
         $api->post('login', 'VCComponent\Laravel\User\Contracts\Auth@authenticate');
+        $api->post('connect', 'VCComponent\Laravel\User\Http\Controllers\ConnectController@connect');
         $api->post('login/social', 'VCComponent\Laravel\User\Contracts\Auth@socialLogin');
         $api->get('me', 'VCComponent\Laravel\User\Contracts\Auth@me');
         $api->put('me/avatar', 'VCComponent\Laravel\User\Contracts\Auth@avatar');
