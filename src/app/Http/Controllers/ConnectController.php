@@ -13,6 +13,11 @@ use VCComponent\Laravel\Vicoders\Core\Exceptions\NotFoundException;
 
 class ConnectController extends ApiController
 {
+    protected $repository;
+    protected $validator;
+    protected $entity;
+    protected $transformer;
+
     public function __construct(UserRepository $repository, AuthValidatorInterface $validator)
     {
         $this->repository = $repository;
@@ -39,10 +44,6 @@ class ConnectController extends ApiController
                 }
             }
 
-            if (!Hash::check('secret', $user->password)) {
-                throw new \Exception("Password does not match", 1003);
-            }
-
             $token = JWTAuth::fromUser($user);
 
         } catch (JWTException $e) {
@@ -51,9 +52,4 @@ class ConnectController extends ApiController
 
         return $this->response->array(compact('token'));
     }
-
-    protected $repository;
-    protected $validator;
-    protected $entity;
-    protected $transformer;
 }
