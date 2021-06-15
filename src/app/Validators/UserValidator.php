@@ -45,7 +45,7 @@ class UserValidator extends AbstractValidator implements UserValidatorInterface
             'last_name'  => ['required', 'regex:/[a-z0-9\s]*/i', 'max:100'],
         ],
         'BULK_UPDATE_STATUS'    => [
-            'item_ids' => ['required'],
+            'ids'      => ['required'],
             'status'   => ['required'],
         ],
         'UPDATE_STATUS_ITEM'    => [

@@ -27,6 +27,9 @@ class TestCase extends OrchestraTestCase
             UserComponentEventProvider::class,
             LaravelServiceProvider::class,
             RolesServiceProvider::class,
+            \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+            \Illuminate\Auth\AuthServiceProvider::class,
+            \Laravel\Socialite\SocialiteServiceProvider::class,
         ];
     }
 
@@ -49,6 +52,7 @@ class TestCase extends OrchestraTestCase
     protected function getEnvironmentSetUp($app)
     {
         // Setup default database to use sqlite :memory:
+        $app['config']->set('app.key', 'base64:TEQ1o2POo+3dUuWXamjwGSBx/fsso+viCCg9iFaXNUA=');
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
             'driver'   => 'sqlite',
@@ -121,8 +125,11 @@ class TestCase extends OrchestraTestCase
                 'user' => \VCComponent\Laravel\User\Validators\UserValidator::class,
                 'auth' => \VCComponent\Laravel\User\Validators\AuthValidator::class,
             ],
+            'test_mode'    => true,
         ]);
         $app['config']->set('auth.providers.users.model', User::class);
+        $app['config']->set('repository.cache.enabled', false);
+        $app['config']->set('jwt.secret', 'Mxw35fL1E0kQgQB3bmbH1iZnUo1PcJrtQB7j9qUDqbqgHzyz7z0hHfJbC7wWyFgU');
     }
 
     public function assertValidation($response, $field, $error_message)
