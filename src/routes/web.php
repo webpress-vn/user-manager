@@ -9,6 +9,7 @@ Route::group(['prefix' => '/'], function () {
         Route::post('forgot-password', 'VCComponent\Laravel\User\Http\Controllers\Web\ForgotPasswordController@sendResetLinkEmail')->name('password.forgot');
 
         Route::get('reset-password', 'VCComponent\Laravel\User\Http\Controllers\Web\ResetPasswordController@showResetForm')->name('password.reset');
+        //
         Route::post('reset-password', 'VCComponent\Laravel\User\Http\Controllers\Web\ResetPasswordController@reset')->name('password.reset.post');
 
         Route::get('account', 'VCComponent\Laravel\User\Http\Controllers\Web\InformationController@index')->name('account')->middleware('auth');
@@ -19,11 +20,13 @@ Route::group(['prefix' => '/'], function () {
         Route::get('logout', 'VCComponent\Laravel\User\Http\Controllers\Web\LoginController@logout')->name('logout');
 
         Route::get('/register', function () {
-            return view('auth.registration');
+            $view = config('user.test_mode') === true ? view('userTest::registration') : view('auth.registration');
+            return $view;
         });
 
         Route::get('/forgot-password', function () {
-            return view('auth.forgot-password');
+            $view = config('user.test_mode') === true ? view('userTest::forgot-password') : view('auth.registration');
+            return $view;
         });
 
         Route::post('register', 'VCComponent\Laravel\User\Http\Controllers\Web\RegisterController@register')->name('register');
