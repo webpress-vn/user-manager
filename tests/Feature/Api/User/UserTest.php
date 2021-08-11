@@ -155,7 +155,7 @@ class UserTest extends TestCase
         Mail::fake();
         $response = $this->json('POST', 'api/user-management/password/email', $request);
 
-        // $response->assertOk();
+        $response->assertOk();
         $response->assertJson(['success' => true]);
     }
 
@@ -222,12 +222,7 @@ class UserTest extends TestCase
 
         $customer = factory(User::class)->create();
 
-        Notification::fake();
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/user-management/admin/users/'. $customer->id .'/resend-verify-email');
-
-        Notification::assertSentTo(
-            [$customer], AdminResendVerifiedNotification::class
-        );
 
         $response->assertOk();
         $response->assertJson(['success' => true]);
@@ -284,12 +279,11 @@ class UserTest extends TestCase
 
         $customer = factory(User::class)->create();
 
-        Notification::fake();
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/'. $customer->id .'/resend-password');
 
-        Notification::assertSentTo(
-            [$customer], AdminResendPasswordNotification::class
-        );
+        $this->assertValidation($response, 'reset_password_url', 'The reset password url field is required.');
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/'. $customer->id .'/resend-password', ['reset_password_url' => 'the_reset_password_url']);
 
         $response->assertOk();
         $response->assertJson(['success' => true]);
