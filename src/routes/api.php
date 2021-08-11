@@ -35,13 +35,13 @@ $api->version('v1', function ($api) {
         $api->put('password/reset', 'VCComponent\Laravel\User\Http\Controllers\ResetPasswordController@reset');
 
         // Users
-        // $api->get('users', 'VCComponent\Laravel\User\Contracts\FrontendUserController@index');
-        // $api->get('users/all', 'VCComponent\Laravel\User\Contracts\FrontendUserController@list');
-        // $api->get('users/{id}', 'VCComponent\Laravel\User\Contracts\FrontendUserController@show');
-        // $api->put('users/{id}', 'VCComponent\Laravel\User\Contracts\FrontendUserController@update');
-        // $api->put('users/{id}/verify-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@verifyEmail');
-        // $api->get('users/{id}/is-verified-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@isVerifiedEmail');
-        // $api->post('users/{id}/resend-verify-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@resendVerifyEmail');
+        $api->get('users', 'VCComponent\Laravel\User\Contracts\FrontendUserController@index');
+        $api->get('users/all', 'VCComponent\Laravel\User\Contracts\FrontendUserController@list');
+        $api->get('users/{id}', 'VCComponent\Laravel\User\Contracts\FrontendUserController@show');
+        $api->put('users/{id}', 'VCComponent\Laravel\User\Contracts\FrontendUserController@update');
+        $api->put('users/{id}/verify-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@verifyEmail');
+        $api->get('users/{id}/is-verified-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@isVerifiedEmail');
+        $api->post('users/{id}/resend-verify-email', 'VCComponent\Laravel\User\Contracts\FrontendUserController@resendVerifyEmail');
 
         // $api->put('verify?id={id}&token={verify_token}', 'AccountController@view');
 

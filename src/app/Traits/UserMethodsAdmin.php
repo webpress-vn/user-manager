@@ -282,11 +282,12 @@ trait UserMethodsAdmin
      */
     public function show(Request $request, $id)
     {
-        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
-        $user = $this->getAuthenticatedUser();
-        if (!$user->ableToShow($id) || $id == $superadmin->id) {
+        $authenticated_user = $this->getAuthenticatedUser();
+        if (!$authenticated_user->ableToShow($id)) {
             throw new PermissionDeniedException();
         }
+
+        $user = $this->repository->find($id);
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -305,10 +306,9 @@ trait UserMethodsAdmin
      */
     public function update(Request $request, $id)
     {
-        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
         $user = $this->getAuthenticatedUser();
 
-        if (!$user->ableToUpdateProfile($id) || $id == $superadmin->id) {
+        if (!$user->ableToUpdateProfile($id)) {
             throw new PermissionDeniedException();
         }
 
@@ -346,9 +346,8 @@ trait UserMethodsAdmin
      */
     public function destroy($id)
     {
-        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToDelete($id) || $id == $superadmin->id) {
+        if (!$user->ableToDelete($id)) {
             throw new PermissionDeniedException();
         }
 

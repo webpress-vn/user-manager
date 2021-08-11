@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Notification;
 use VCComponent\Laravel\User\Notifications\AdminResendVerifiedNotification;
 use VCComponent\Laravel\User\Notifications\AdminResendPasswordNotification;
 use Illuminate\Auth\Passwords\PasswordBroker;
+use Illuminate\Support\Facades\Auth;
 
 class UserTest extends TestCase
 {
@@ -137,24 +138,24 @@ class UserTest extends TestCase
 
         $this->assertValidation($response, 'email', "The email field is required.");
 
-        $request  = ['email' => 'test'];
+        $request  = ['email' => 'test', 'reset_password_url' => ''];
         $response = $this->json('POST', 'api/user-management/password/email', $request);
 
         $this->assertValidation($response, 'email', "The email must be a valid email address.");
 
-        $request  = ['email' => 'test@gmail.com'];
+        $request  = ['email' => 'test@gmail.com', 'reset_password_url' => 'reset_password_url'];
         $response = $this->json('POST', 'api/user-management/password/email', $request);
 
         $response->assertJson(['message' => 'Email not found']);
 
         $user = factory(User::class)->create();
 
-        $request = ['email' => $user->email];
+        $request = ['email' => $user->email, 'reset_password_url' => 'reset_password_url'];
 
         Mail::fake();
         $response = $this->json('POST', 'api/user-management/password/email', $request);
 
-        $response->assertOk();
+        // $response->assertOk();
         $response->assertJson(['success' => true]);
     }
 
@@ -180,15 +181,19 @@ class UserTest extends TestCase
         $this->assertValidation($response, 'email', "The email must be a valid email address.");
         $this->assertValidation($response, 'password', "The password confirmation does not match.");
 
+        $user  = factory(User::class)->create();
+
+        $token = app(PasswordBroker::class)->createToken($user);
+
         $request = [
-            'token'                 => 'asfasf',
+            'token'                 => $token,
             'email'                 => 'test@email.com',
             'password'              => '1234456',
             'password_confirmation' => '1234456'
         ];
         $response = $this->json('PUT', 'api/user-management/password/reset', $request);
 
-        $response->assertJson(['errors' => ['email' => ["We can't find a user with that email address."]]]);
+        $response->assertJson(['message' => "Token doesn't match or expired"]);
 
         $user  = factory(User::class)->create();
 
@@ -204,7 +209,7 @@ class UserTest extends TestCase
         $response = $this->json('PUT', 'api/user-management/password/reset' , $request);
 
         $response->assertOk();
-        $response->assertJson(['message' => 'Your password has been reset!']);
+        $response->assertJsonStructure(['token' => []]);
     }
 
     /**
@@ -418,7 +423,7 @@ class UserTest extends TestCase
         $customer = factory(User::class)->create();
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/user-management/admin/users/'. $customer->id);
-        
+
         $response->assertOk();
         $response->assertJson(['data' => [
             'email'      => $customer->email,
