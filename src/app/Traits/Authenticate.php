@@ -15,8 +15,6 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use VCComponent\Laravel\User\Contracts\AuthValidatorInterface;
-use VCComponent\Laravel\User\Contracts\Events\UserLoggedInEventContract;
-use VCComponent\Laravel\User\Contracts\Events\UserRegisteredBySocialAccountEventContract;
 use VCComponent\Laravel\User\Events\UserLoggedInEvent;
 use VCComponent\Laravel\User\Events\UserRegisteredBySocialAccountEvent;
 use VCComponent\Laravel\User\Facades\VCCAuth;
@@ -47,8 +45,7 @@ trait Authenticate
 
             $token = JWTAuth::fromUser($user);
 
-            $event = App::makeWith(UserLoggedInEventContract::class, ['user' => $user]);
-            Event::dispatch($event);
+            event(new UserLoggedInEvent($user));
 
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
@@ -135,8 +132,9 @@ trait Authenticate
             $check_user = $this->entity->where('account_type', $provider)->where('social_id', $social_account->getId())->first();
             if (!$check_user) {
                 $user  = $this->saveOrUpdateUser($social_account, $provider);
-                $event = App::makeWith(UserRegisteredBySocialAccountEventContract::class, ['user' => $user]);
-                Event::dispatch($event);
+                
+                event(new UserRegisteredBySocialAccountEvent($user));
+
             } else {
                 $user = $this->saveOrUpdateUser($social_account, $provider, $check_user['id']);
             }
@@ -145,8 +143,9 @@ trait Authenticate
         }
 
         $token = JWTAuth::fromUser($user);
-        $event = App::makeWith(UserLoggedInEventContract::class, ['user' => $user]);
-        Event::dispatch($event);
+        
+        event(new UserLoggedInEvent($user));
+
         return $this->response->array(compact('token'));
     }
 
