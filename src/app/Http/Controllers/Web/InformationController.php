@@ -54,7 +54,7 @@ class InformationController extends Controller
             "birth"        => $birth,
         ];
 
-        $user = User::whereId($request['auth_id']);
+        $user = User::find($request['auth_id']);
 
         $validator = Validator::make($data, [
             'email' => ['unique:users,email,' . $request['auth_id'], 'email'],
@@ -63,7 +63,7 @@ class InformationController extends Controller
         if ($validator->fails()):
             return redirect()->back()->withErrors($validator)->withInput();
         endif;
-        
+
         $user->update($data);
 
         return redirect()->back()->with('messages', ('Thay đổi thông tin cá nhân thành công !'));
