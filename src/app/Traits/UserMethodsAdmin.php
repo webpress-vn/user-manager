@@ -7,27 +7,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use VCComponent\Laravel\Export\Services\Export\Export;
-use VCComponent\Laravel\User\Contracts\Events\UserCreatedByAdminEventContract;
-use VCComponent\Laravel\User\Contracts\Events\UserDeletedEventContract;
-use VCComponent\Laravel\User\Contracts\Events\UserUpdatedByAdminEventContract;
 use VCComponent\Laravel\User\Contracts\UserValidatorInterface;
 use VCComponent\Laravel\User\Facades\VCCAuth;
-use VCComponent\Laravel\User\Notifications\AdminResendPasswordNotification;
-use VCComponent\Laravel\User\Notifications\AdminResendVerifiedNotification;
 use VCComponent\Laravel\User\Repositories\UserRepository;
 use VCComponent\Laravel\User\Transformers\UserTransformer;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\NotFoundException;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
 use VCComponent\Laravel\User\Entities\User;
+use VCComponent\Laravel\User\Events\AdminResendPasswordEvent;
+use VCComponent\Laravel\User\Events\ResendVerifyEmailEvent;
+use VCComponent\Laravel\User\Events\UserCreatedByAdminEvent;
+use VCComponent\Laravel\User\Events\UserDeletedEvent;
+use VCComponent\Laravel\User\Events\UserEmailVerifiedEvent;
+use VCComponent\Laravel\User\Events\UserUpdatedByAdminEvent;
 
 trait UserMethodsAdmin
 {
+    use SendsPasswordResetEmails;
+
     public function __construct(UserRepository $repository, UserValidatorInterface $validator)
     {
         $this->repository = $repository;
@@ -268,8 +271,7 @@ trait UserMethodsAdmin
             }
         }
 
-        $event = App::makeWith(UserCreatedByAdminEventContract::class, ['user' => $user]);
-        Event::dispatch($event);
+        event(new UserCreatedByAdminEvent($user));
 
         return $this->response->item($user, new $this->transformer);
     }
@@ -282,11 +284,12 @@ trait UserMethodsAdmin
      */
     public function show(Request $request, $id)
     {
-        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
-        $user = $this->getAuthenticatedUser();
-        if (!$user->ableToShow($id) || $id == $superadmin->id) {
+        $authenticated_user = $this->getAuthenticatedUser();
+        if (!$authenticated_user->ableToShow($id)) {
             throw new PermissionDeniedException();
         }
+
+        $user = $this->repository->find($id);
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -305,10 +308,9 @@ trait UserMethodsAdmin
      */
     public function update(Request $request, $id)
     {
-        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
         $user = $this->getAuthenticatedUser();
 
-        if (!$user->ableToUpdateProfile($id) || $id == $superadmin->id) {
+        if (!$user->ableToUpdateProfile($id)) {
             throw new PermissionDeniedException();
         }
 
@@ -332,8 +334,7 @@ trait UserMethodsAdmin
             }
         }
 
-        $event = App::makeWith(UserUpdatedByAdminEventContract::class, ['user' => $user]);
-        Event::dispatch($event);
+        event(new UserUpdatedByAdminEvent($user));
 
         return $this->response->item($user, new $this->transformer);
     }
@@ -346,9 +347,8 @@ trait UserMethodsAdmin
      */
     public function destroy($id)
     {
-        $superadmin = User::where('username', User::SUPER_ADMIN_USER )->first();
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToDelete($id) || $id == $superadmin->id) {
+        if (!$user->ableToDelete($id)) {
             throw new PermissionDeniedException();
         }
 
@@ -356,8 +356,8 @@ trait UserMethodsAdmin
             $this->beforeDestroy($id);
         }
         $this->repository->delete($id);
-        $event = App::make(UserDeletedEventContract::class);
-        Event::dispatch($event);
+
+        event (new UserDeletedEvent());
 
         return $this->success();
     }
@@ -442,18 +442,26 @@ trait UserMethodsAdmin
             throw new ConflictHttpException("Your email address is verified");
         }
 
-        $user->notify(new AdminResendVerifiedNotification());
+        event(new ResendVerifyEmailEvent($user));
+        
         return $this->success();
     }
 
-    public function resendPassword($id)
+    public function resendPassword(Request $request, $id)
     {
-        $user           = $this->repository->find($id);
-        $pass           = Str::random(6);
-        $user->password = $pass;
-        $user->update();
+        $request->validate([
+            'reset_password_url' => 'required',
+        ]);
 
-        $user->notify(new AdminResendPasswordNotification($pass));
+        $user           = $this->repository->find($id);
+
+        if (!$user->email) {
+            throw new NotFoundException('Email');
+        }
+
+        $token = $this->broker()->createToken($user);
+
+        event(new AdminResendPasswordEvent($user, $token));
 
         return $this->success();
     }
@@ -467,6 +475,8 @@ trait UserMethodsAdmin
         }
         $user = $this->repository->verifyEmail($user);
         $user->save();
+
+        event(new UserEmailVerifiedEvent($user));
 
         return $this->success();
     }

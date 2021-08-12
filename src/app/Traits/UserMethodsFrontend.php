@@ -10,12 +10,12 @@ use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use VCComponent\Laravel\User\Contracts\Events\UserEmailVerifiedEventContract;
-use VCComponent\Laravel\User\Contracts\Events\UserRegisteredEventContract;
-use VCComponent\Laravel\User\Contracts\Events\UserUpdatedEventContract;
 use VCComponent\Laravel\User\Contracts\UserValidatorInterface;
+use VCComponent\Laravel\User\Events\ResendVerifyEmailEvent;
+use VCComponent\Laravel\User\Events\UserEmailVerifiedEvent;
+use VCComponent\Laravel\User\Events\UserRegisteredEvent;
+use VCComponent\Laravel\User\Events\UserUpdatedByAdminEvent;
 use VCComponent\Laravel\User\Facades\VCCAuth;
-use VCComponent\Laravel\User\Notifications\UserRegisteredNotification;
 use VCComponent\Laravel\User\Repositories\UserRepository;
 use VCComponent\Laravel\User\Transformers\UserTransformer;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
@@ -141,8 +141,7 @@ trait UserMethodsFrontend
 
         // $user = $this->repository->attachRole('user', $user->id);
 
-        $event = App::makeWith(UserRegisteredEventContract::class, ['user' => $user]);
-        Event::dispatch($event);
+        event(new UserRegisteredEvent($user));
 
         $token = JWTAuth::fromUser($user);
 
@@ -203,8 +202,7 @@ trait UserMethodsFrontend
             }
         }
 
-        $event = App::makeWith(UserUpdatedEventContract::class, ['user' => $user]);
-        Event::dispatch($event);
+        event(new UserUpdatedByAdminEvent($user));
 
         return $this->response->item($user, new $this->transformer);
     }
@@ -219,8 +217,7 @@ trait UserMethodsFrontend
         }
         $user = $this->repository->verifyEmail($user);
 
-        $event = App::makeWith(UserEmailVerifiedEventContract::class, ['user' => $user]);
-        Event::dispatch($event);
+        event(new UserEmailVerifiedEvent($user));
 
         return $this->response->item($user, new $this->transformer);
     }
@@ -243,7 +240,7 @@ trait UserMethodsFrontend
             throw new ConflictHttpException("Your email address is verified", null, 1007);
         }
 
-        $user->notify(new UserRegisteredNotification());
+        event(new ResendVerifyEmailEvent($user));
 
         return $this->success();
     }
