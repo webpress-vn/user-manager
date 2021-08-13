@@ -236,7 +236,7 @@ class UserTest extends TestCase
         $user = factory(User::class)->create();
         $token = $this->loginToken();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/1/verify-email');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/'.$user->id.'/verify-email');
 
         $data = $user->toArray();
         $data['email_verified'] = true;
@@ -257,7 +257,7 @@ class UserTest extends TestCase
         $user = factory(User::class)->create();
         $token = $this->loginToken();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/1/verify-email');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/'.$user->id.'/verify-email');
 
         $data = $user->toArray();
         $data['email_verified'] = true;

@@ -54,10 +54,27 @@ class TestCase extends OrchestraTestCase
         // Setup default database to use sqlite :memory:
         $app['config']->set('app.key', 'base64:TEQ1o2POo+3dUuWXamjwGSBx/fsso+viCCg9iFaXNUA=');
         $app['config']->set('database.default', 'testbench');
+        // $app['config']->set('database.connections.testbench', [
+        //     'driver'   => 'sqlite',
+        //     'database' => ':memory:',
+        //     'prefix'   => '',
+        // ]);
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => "test",
+            'username' => "root",
+            'password' => "",
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => [],
         ]);
         $app['config']->set('api', [
             'standardsTree'      => 'x',

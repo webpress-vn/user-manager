@@ -258,7 +258,7 @@ class UserTest extends TestCase
             'first_name'   => 'first_nameUpdate',
             'last_name'    => 'last_nameUpdate',
             'address'      => 'addressUpdate',
-            'gender'       => 'male',
+            'gender'       => '1',
             'auth_id'      => $user->id
         ];
 

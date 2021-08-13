@@ -14,7 +14,7 @@ class AddIdPermissionGroupToPermissionsTable extends Migration
     public function up()
     {
         Schema::table('permissions', function (Blueprint $table) {
-            $table->bigInteger('permission_group_id')->unsigned()->nullable();
+            $table->bigInteger('permission_group_id')->unsigned();
         });
         Schema::table('permissions', function (Blueprint $table) {
             $table->foreign('permission_group_id')->references('id')->on('permission_group')->onDelete('cascade');
