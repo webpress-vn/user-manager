@@ -16,6 +16,14 @@ class RoleController extends ApiController
     public function __construct(RoleValidator $validator)
     {
         $this->validator = $validator;
+        if (config('user.auth_middleware.admin.middleware') !== '') {
+            $this->middleware(
+                config('user.auth_middleware.admin.middleware'),
+                ['except' => config('user.auth_middleware.admin.except')]
+            );
+        } else {
+            throw new Exception("Admin middleware configuration is required");
+        }
     }
 
     public function hasStatus($request, $query)

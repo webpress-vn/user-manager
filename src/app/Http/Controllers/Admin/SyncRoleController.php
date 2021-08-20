@@ -19,6 +19,15 @@ class SyncRoleController extends ApiController
     {
         $this->userRepository = $user_repository;
         $this->userEntity     = $user_repository->getEntity();
+
+        if (config('user.auth_middleware.admin.middleware') !== '') {
+            $this->middleware(
+                config('user.auth_middleware.admin.middleware'),
+                ['except' => config('user.auth_middleware.admin.except')]
+            );
+        } else {
+            throw new Exception("Admin middleware configuration is required");
+        }
     }
 
     public function __invoke(Request $request)
