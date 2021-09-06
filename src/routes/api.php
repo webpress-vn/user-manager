@@ -25,6 +25,8 @@ $api->version('v1', function ($api) {
         // Auth
         $api->post('register', 'VCComponent\Laravel\User\Contracts\FrontendUserController@store');
         $api->post('login', 'VCComponent\Laravel\User\Contracts\Auth@authenticate');
+        $api->post('refresh', 'VCComponent\Laravel\User\Contracts\Auth@refresh');
+        $api->post('invalidate-token', 'VCComponent\Laravel\User\Contracts\Auth@invalidateToken');
         $api->post('connect', 'VCComponent\Laravel\User\Http\Controllers\ConnectController@connect');
         $api->post('login/social', 'VCComponent\Laravel\User\Contracts\Auth@socialLogin');
         $api->get('me', 'VCComponent\Laravel\User\Contracts\Auth@me');
