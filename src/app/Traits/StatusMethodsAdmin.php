@@ -8,6 +8,7 @@ use VCComponent\Laravel\User\Transformers\StatusTransformer;
 
 trait StatusMethodsAdmin
 {
+
     public function index(Request $request)
     {
         $query = new Status;
