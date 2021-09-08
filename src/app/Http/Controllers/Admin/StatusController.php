@@ -18,6 +18,13 @@ class StatusController extends ApiController
     {
         $this->repository = $repository;
         $this->validator  = $validator;
-        $this->middleware('jwt.auth', ['except' => []]);
+        if (config('user.auth_middleware.admin.middleware') !== '') {
+            $this->middleware(
+                config('user.auth_middleware.admin.middleware'),
+                ['except' => config('user.auth_middleware.admin.except')]
+            );
+        } else {
+            throw new Exception("Admin middleware configuration is required");
+        }
     }
 }

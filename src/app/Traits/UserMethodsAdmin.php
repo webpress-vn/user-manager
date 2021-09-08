@@ -36,7 +36,15 @@ trait UserMethodsAdmin
         $this->repository = $repository;
         $this->entity     = $repository->getEntity();
         $this->validator  = $validator;
-        $this->middleware('jwt.auth', ['except' => []]);
+
+        if (config('user.auth_middleware.admin.middleware') !== '') {
+            $this->middleware(
+                config('user.auth_middleware.admin.middleware'),
+                ['except' => config('user.auth_middleware.admin.except')]
+            );
+        } else {
+            throw new Exception("Admin middleware configuration is required");
+        }
 
         if (isset(config('user.transformers')['user'])) {
             $this->transformer = config('user.transformers.user');
@@ -187,7 +195,7 @@ trait UserMethodsAdmin
         $query = $this->hasVrifyRequest($request, $query);
 
         $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
-        $users    = $query->where('username','<>', User::SUPER_ADMIN_USER)->paginate($per_page);
+        $users    = $query->where('username', '<>', User::SUPER_ADMIN_USER)->paginate($per_page);
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -198,7 +206,8 @@ trait UserMethodsAdmin
         return $this->response->paginator($users, $transformer);
     }
 
-    function list(Request $request) {
+    function list(Request $request)
+    {
         $query = $this->entity;
 
         $query = $this->applyConstraintsFromRequest($query, $request);
@@ -213,7 +222,7 @@ trait UserMethodsAdmin
         $query = $this->hasStatus($request, $query);
         $query = $this->hasVrifyRequest($request, $query);
 
-        $users = $query->where('username','<>', User::SUPER_ADMIN_USER)->get();
+        $users = $query->where('username', '<>', User::SUPER_ADMIN_USER)->get();
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -357,7 +366,7 @@ trait UserMethodsAdmin
         }
         $this->repository->delete($id);
 
-        event (new UserDeletedEvent());
+        event(new UserDeletedEvent());
 
         return $this->success();
     }
@@ -443,7 +452,7 @@ trait UserMethodsAdmin
         }
 
         event(new ResendVerifyEmailEvent($user));
-        
+
         return $this->success();
     }
 

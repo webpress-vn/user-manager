@@ -20,7 +20,7 @@ use VCComponent\Laravel\User\Repositories\UserRepository;
 use VCComponent\Laravel\User\Repositories\UserRepositoryEloquent;
 use VCComponent\Laravel\User\Validators\AuthValidator;
 use VCComponent\Laravel\User\Validators\UserValidator;
-
+use VCComponent\Laravel\User\Commands\PasswordResetCommand;
 class UserComponentProvider extends ServiceProvider
 {
     private $adminController;
@@ -82,6 +82,12 @@ class UserComponentProvider extends ServiceProvider
         $this->loadViewsFrom(
             __DIR__ . '/../../resources/views', 'user_component'
         );
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                PasswordResetCommand::class,
+            ]);
+        }
+
         $this->loadViewsFrom(__DIR__ . '/../../../tests/Stubs/views', 'userTest');
         $this->registerMiddleware();
     }
