@@ -29,7 +29,7 @@ trait Authenticate
         $this->repository = $repository;
         $this->validator  = $validator;
         $this->entity     = $repository->getEntity();
-        $this->middleware('jwt.auth', ['except' => ['authenticate', 'socialLogin', 'saveOrUpdateUser']]);
+        $this->middleware('jwt.auth', ['except' => ['authenticate', 'socialLogin', 'saveOrUpdateUser', 'refresh']]);
 
         if (isset(config('user.transformers')['user'])) {
             $this->transformer = config('user.transformers.user');
@@ -55,7 +55,7 @@ trait Authenticate
     }
     public function refresh()
     {
-        return $this->respondWithToken(JWTAuth::refresh());
+        return $this->respondWithToken(JWTAuth::refresh(JWTAuth::getToken()));
     }
     /**
      * Get the token array structure.
