@@ -9,11 +9,13 @@ use VCComponent\Laravel\User\Contracts\AdminUserController;
 use VCComponent\Laravel\User\Contracts\Auth;
 use VCComponent\Laravel\User\Contracts\AuthValidatorInterface;
 use VCComponent\Laravel\User\Contracts\FrontendUserController;
+use VCComponent\Laravel\User\Contracts\UserPolicyInterface;
 use VCComponent\Laravel\User\Contracts\UserValidatorInterface;
 use VCComponent\Laravel\User\Http\Controllers\Admin\UserController as AdminController;
 use VCComponent\Laravel\User\Http\Controllers\AuthController;
 use VCComponent\Laravel\User\Http\Controllers\Frontend\UserController as FrontendController;
 use VCComponent\Laravel\User\Http\Middleware\EmailVerify;
+use VCComponent\Laravel\User\Policies\UserPolicy;
 use VCComponent\Laravel\User\Repositories\StatusRepository;
 use VCComponent\Laravel\User\Repositories\StatusRepositoryEloquent;
 use VCComponent\Laravel\User\Repositories\UserRepository;
@@ -50,6 +52,10 @@ class UserComponentProvider extends ServiceProvider
         $this->registerValidators();
 
         $this->registerFacades();
+
+        $this->registerPolicies();
+
+        $this->app->register(UserAuthServiceProvider::class);
     }
 
     /**
@@ -155,5 +161,10 @@ class UserComponentProvider extends ServiceProvider
         foreach ($this->middlewareAliases as $alias => $middleware) {
             $router->$method($alias, $middleware);
         }
+    }
+
+    protected function registerPolicies() 
+    {
+        $this->app->bind(UserPolicyInterface::class, UserPolicy::class);
     }
 }
