@@ -10,6 +10,17 @@ use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 
 class AttachPermissionController extends ApiController
 {
+    public function __construct()
+    {
+        if (config('user.auth_middleware.admin.middleware') !== '') {
+            $this->middleware(
+                config('user.auth_middleware.admin.middleware'),
+                ['except' => config('user.auth_middleware.admin.except')]
+            );
+        } else {
+            throw new Exception("Admin middleware configuration is required");
+        }
+    }
     public function __invoke(Request $request)
     {
         $request->validate([

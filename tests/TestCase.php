@@ -60,21 +60,12 @@ class TestCase extends OrchestraTestCase
             'prefix'   => '',
         ]);
         // $app['config']->set('database.connections.testbench', [
-        //     'driver' => 'mysql',
-        //     'url' => env('DATABASE_URL'),
-        //     'host' => env('DB_HOST', '127.0.0.1'),
-        //     'port' => env('DB_PORT', '3306'),
-        //     'database' => "test",
-        //     'username' => "root",
-        //     'password' => "",
-        //     'unix_socket' => env('DB_SOCKET', ''),
-        //     'charset' => 'utf8mb4',
-        //     'collation' => 'utf8mb4_unicode_ci',
-        //     'prefix' => '',
-        //     'prefix_indexes' => true,
-        //     'strict' => true,
-        //     'engine' => null,
-        //     'options' => [],
+        //     'driver'   => 'mysql',
+        //     'host'     => 'localhost',
+        //     'port'     => 3306,
+        //     'database' => 'test_user',
+        //     'username' => 'root',
+        //     'password' => '1111',
         // ]);
         $app['config']->set('api', [
             'standardsTree'      => 'x',

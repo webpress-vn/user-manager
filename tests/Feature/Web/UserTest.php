@@ -3,11 +3,8 @@
 namespace VCComponent\Laravel\User\Test\Feature\Web\User;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
-use NF\Roles\Models\Role;
 use VCComponent\Laravel\User\Entities\User;
-use VCComponent\Laravel\User\Notifications\AdminResendPasswordNotification;
 use VCComponent\Laravel\User\Test\TestCase;
 
 class UserTest extends TestCase
@@ -239,27 +236,27 @@ class UserTest extends TestCase
 
         $homePage = 'http://localhost';
         $response->assertRedirect($homePage);
-        
+
         $response = $this->call('GET', 'account');
 
         $response->assertOk();
         $response->assertViewIs('userTest::account');
     }
 
-     /**
+    /**
      * @test
      */
     public function can_edit_info_by_web_router()
     {
-        $user = factory(User::class)->create();
-         $request = [
+        $user    = factory(User::class)->create();
+        $request = [
             'email'        => 'customerUpdate@gmail.com',
             'phone_number' => '098164849Update',
             'first_name'   => 'first_nameUpdate',
             'last_name'    => 'last_nameUpdate',
             'address'      => 'addressUpdate',
-            'gender'       => '1',
-            'auth_id'      => $user->id
+            'gender'       => 1,
+            'auth_id'      => $user->id,
         ];
 
         $response = $this->actingAs($user)->call('POST', 'info-edit', $request);
