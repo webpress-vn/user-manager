@@ -4,8 +4,7 @@ namespace VCComponent\Laravel\User\Traits;
 
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
@@ -232,7 +231,7 @@ trait UserMethodsAdmin
     public function store(Request $request)
     {
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToCreate()) {
+        if (Gate::forUser($user)->denies('create-user')) {
             throw new PermissionDeniedException();
         }
 
@@ -284,12 +283,12 @@ trait UserMethodsAdmin
      */
     public function show(Request $request, $id)
     {
+        $user = $this->repository->find($id);
+
         $authenticated_user = $this->getAuthenticatedUser();
-        if (!$authenticated_user->ableToShow($id)) {
+        if (Gate::forUser($authenticated_user)->denies('show-user', $user)) {
             throw new PermissionDeniedException();
         }
-
-        $user = $this->repository->find($id);
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -308,9 +307,10 @@ trait UserMethodsAdmin
      */
     public function update(Request $request, $id)
     {
-        $user = $this->getAuthenticatedUser();
+        $user = $this->repository->find($id);
 
-        if (!$user->ableToUpdateProfile($id)) {
+        $authenticated_user = $this->getAuthenticatedUser();
+        if (Gate::forUser($authenticated_user)->denies('update-user-profile', $user)) {
             throw new PermissionDeniedException();
         }
 
@@ -347,8 +347,10 @@ trait UserMethodsAdmin
      */
     public function destroy($id)
     {
-        $user = $this->getAuthenticatedUser();
-        if (!$user->ableToDelete($id)) {
+        $user = $this->repository->find($id);
+
+        $authenticated_user = $this->getAuthenticatedUser();
+        if (Gate::forUser($authenticated_user)->denies('delete-user', $user)) {
             throw new PermissionDeniedException();
         }
 
@@ -365,7 +367,7 @@ trait UserMethodsAdmin
     public function bulkUpdateStatus(Request $request)
     {
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToUpdate()) {
+        if (Gate::forUser($user)->denies('update-user')) {
             throw new PermissionDeniedException();
         }
 
@@ -382,7 +384,7 @@ trait UserMethodsAdmin
     public function status(Request $request, $id)
     {
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToUpdate()) {
+        if (Gate::forUser($user)->denies('update-user')) {
             throw new PermissionDeniedException();
         }
 

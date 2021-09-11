@@ -157,7 +157,7 @@ trait UserMethodsFrontend
     public function show(Request $request, $id)
     {
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToShow($id)) {
+        if (Gate::forUser($user)->denies('show-user')) {
             throw new PermissionDeniedException();
         }
 
@@ -182,7 +182,7 @@ trait UserMethodsFrontend
     public function update(Request $request, $id)
     {
         $user = $this->getAuthenticatedUser();
-        if (!$user->ableToUpdateProfile($id)) {
+        if (Gate::forUser($user)->denies('update-user-profile')) {
             throw new PermissionDeniedException();
         }
 
