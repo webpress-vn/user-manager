@@ -6,28 +6,35 @@ use VCComponent\Laravel\User\Contracts\UserPolicyInterface;
 
 class UserPolicy implements UserPolicyInterface 
 {
-    public function ableToShow($user, $model)
+    public function before($user, $ability)
     {
-        return true;
+        if ($user->isAdministrator()) {
+            return true;
+        }
+    }
+
+    public function view($user, $model)
+    {
+        return $user->hasPermission('view-user');
     }
     
-    public function ableToCreate($user)
+    public function create($user)
     {
-        return true;
+        return $user->hasPermission('create-user');
     }
 
-    public function ableToUpdateProfile($user, $model)
+    public function updateProfile($user, $model)
     {
-        return true;
+        return $user->hasPermission('update-user-profile');
     }
 
-    public function ableToUpdate($user)
+    public function update($user)
     {
-        return true;
+        return $user->hasPermission('update-user');
     }
 
-    public function ableToDelete($user, $model)
+    public function delete($user, $model)
     {
-        return true;
+        return $user->hasPermission('delete-user');
     }
 }

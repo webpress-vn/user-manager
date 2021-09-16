@@ -240,7 +240,7 @@ trait UserMethodsAdmin
     public function store(Request $request)
     {
         $user = $this->getAuthenticatedUser();
-        if (Gate::forUser($user)->denies('create-user')) {
+        if (Gate::forUser($user)->denies('create', User::class)) {
             throw new PermissionDeniedException();
         }
 
@@ -295,7 +295,7 @@ trait UserMethodsAdmin
         $user = $this->repository->find($id);
 
         $authenticated_user = $this->getAuthenticatedUser();
-        if (Gate::forUser($authenticated_user)->denies('show-user', $user)) {
+        if (Gate::forUser($authenticated_user)->denies('view', $user)) {
             throw new PermissionDeniedException();
         }
 
@@ -319,7 +319,7 @@ trait UserMethodsAdmin
         $user = $this->repository->find($id);
 
         $authenticated_user = $this->getAuthenticatedUser();
-        if (Gate::forUser($authenticated_user)->denies('update-user-profile', $user)) {
+        if (Gate::forUser($authenticated_user)->denies('update-profile', $user)) {
             throw new PermissionDeniedException();
         }
 
@@ -359,7 +359,7 @@ trait UserMethodsAdmin
         $user = $this->repository->find($id);
 
         $authenticated_user = $this->getAuthenticatedUser();
-        if (Gate::forUser($authenticated_user)->denies('delete-user', $user)) {
+        if (Gate::forUser($authenticated_user)->denies('delete', $user)) {
             throw new PermissionDeniedException();
         }
 
@@ -376,7 +376,7 @@ trait UserMethodsAdmin
     public function bulkUpdateStatus(Request $request)
     {
         $user = $this->getAuthenticatedUser();
-        if (Gate::forUser($user)->denies('update-user')) {
+        if (Gate::forUser($user)->denies('update', User::class)) {
             throw new PermissionDeniedException();
         }
 
@@ -393,7 +393,7 @@ trait UserMethodsAdmin
     public function status(Request $request, $id)
     {
         $user = $this->getAuthenticatedUser();
-        if (Gate::forUser($user)->denies('update-user')) {
+        if (Gate::forUser($user)->denies('update', User::class)) {
             throw new PermissionDeniedException();
         }
 

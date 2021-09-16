@@ -5,7 +5,9 @@ namespace VCComponent\Laravel\User\Test\Feature\Api\User;
 use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use NF\Roles\Models\Role;
 use VCComponent\Laravel\User\Entities\User;
+use VCComponent\Laravel\User\Entities\UserHasRole;
 use VCComponent\Laravel\User\Test\TestCase;
 
 class UserTest extends TestCase
@@ -574,7 +576,7 @@ class UserTest extends TestCase
         $dataLogin = ['username' => 'admin', 'password' => '123456789', 'email' => 'admin@test.com'];
         $user      = factory(User::class)->make($dataLogin);
         $user->save();
-
+        $user->attachRole(factory(Role::class)->create(['slug' => 'admin']));
         $login = $this->json('POST', 'api/user-management/login', $dataLogin);
         $token = $login->Json()['token'];
 

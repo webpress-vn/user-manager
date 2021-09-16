@@ -4,6 +4,8 @@ namespace VCComponent\Laravel\User\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use VCComponent\Laravel\User\Contracts\UserPolicyInterface;
+use VCComponent\Laravel\User\Entities\User;
 
 class UserAuthServiceProvider extends ServiceProvider
 {
@@ -14,6 +16,7 @@ class UserAuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         //
+        User::class => UserPolicyInterface::class,
     ];
 
     /**
@@ -24,12 +27,6 @@ class UserAuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-        
-        Gate::define('show-user', 'VCComponent\Laravel\User\Contracts\UserPolicyInterface@ableToShow');
-        Gate::define('create-user', 'VCComponent\Laravel\User\Contracts\UserPolicyInterface@ableToCreate');
-        Gate::define('update-user-profile', 'VCComponent\Laravel\User\Contracts\UserPolicyInterface@ableToUpdateProfile');
-        Gate::define('update-user', 'VCComponent\Laravel\User\Contracts\UserPolicyInterface@ableToUpdate');
-        Gate::define('delete-user', 'VCComponent\Laravel\User\Contracts\UserPolicyInterface@ableToDelete');
         //
     }
 }
