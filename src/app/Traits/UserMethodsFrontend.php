@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -156,12 +157,12 @@ trait UserMethodsFrontend
      */
     public function show(Request $request, $id)
     {
-        $user = $this->getAuthenticatedUser();
-        if (!$user->ableToShow($id)) {
+        $user = $this->repository->find($id);
+
+        $authenticated_user = $this->getAuthenticatedUser();
+        if (Gate::forUser($authenticated_user)->denies('view', $user)) {
             throw new PermissionDeniedException();
         }
-
-        $user = $this->repository->find($id);
 
         if ($request->has('includes')) {
             $transformer = new $this->transformer(explode(',', $request->get('includes')));
@@ -181,8 +182,10 @@ trait UserMethodsFrontend
      */
     public function update(Request $request, $id)
     {
-        $user = $this->getAuthenticatedUser();
-        if (!$user->ableToUpdateProfile($id)) {
+        $user = $this->repository->find($id);
+
+        $authenticated_user = $this->getAuthenticatedUser();
+        if (Gate::forUser($authenticated_user)->denies('update-profile', $user)) {
             throw new PermissionDeniedException();
         }
 
