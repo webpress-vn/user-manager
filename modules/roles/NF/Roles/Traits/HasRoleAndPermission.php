@@ -394,4 +394,16 @@ trait HasRoleAndPermission
 
         return parent::__call($method, $parameters);
     }
+
+    /**
+     * Check if user has admin roles.
+     *
+     * @return bool
+     */
+    public function isAdministrator()
+    {
+        return $this->roles()->get()->contains(function ($value, $key) {
+            return Str::is(['admin', 'super_admin'], $value->slug);
+        });
+    }
 }

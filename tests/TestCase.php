@@ -135,6 +135,22 @@ class TestCase extends OrchestraTestCase
             ],
             'test_mode'    => true,
         ]);
+        $app['config']->set('roles', [
+            'connection' => null,
+            'separator' => '.',
+            'models' => [
+                'role' => \NF\Roles\Models\Role::class,
+                'permission' => \NF\Roles\Models\Permission::class,
+            ],
+            'pretend' => [
+                'enabled' => false,
+                'options' => [
+                    'is' => true,
+                    'can' => true,
+                    'allowed' => true,
+                ],
+            ],
+        ]);
         $app['config']->set('auth.providers.users.model', User::class);
         $app['config']->set('repository.cache.enabled', false);
         $app['config']->set('jwt.secret', 'Mxw35fL1E0kQgQB3bmbH1iZnUo1PcJrtQB7j9qUDqbqgHzyz7z0hHfJbC7wWyFgU');

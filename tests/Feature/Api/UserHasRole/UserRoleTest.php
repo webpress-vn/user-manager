@@ -196,7 +196,7 @@ class UserRoleTest extends TestCase
         $dataLogin = ['username' => 'admin', 'password' => '123456789', 'email' => 'admin@test.com'];
         $user      = factory(User::class)->make($dataLogin);
         $user->save();
-
+        $user->attachRole(factory(Role::class)->create(['slug' => 'admin']));
         $login = $this->json('POST', 'api/user-management/login', $dataLogin);
         $token = $login->Json()['token'];
 
