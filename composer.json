@@ -27,10 +27,10 @@
         }
     },
     "require": {
-        "webpress/core": "^3.0",
+        "webpress/core": "^3.1",
         "laravel/socialite": "v4.4.0",
         "illuminate/support": "^7.0|^8.0",
-        "doctrine/dbal": "v2.10.1",
+        "doctrine/dbal": "v2.12.1",
         "laravel/ui": "^2.1"
     },
     "require-dev": {
