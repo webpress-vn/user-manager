@@ -571,6 +571,27 @@ class UserTest extends TestCase
         $response->assertJson(['success' => true]);
     }
 
+    public function can_connect_user_by_api_router()
+    {
+        $token = "";
+        $response = $this->withHeader('Authorization', $token)->json('POST', '/api/user-management/connect');
+
+        $this->assertAuthorization($response);
+
+        $token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTYzNTkzMTk1NywiZXhwIjo0MjI3OTMxOTU3fQ.ndiJq4bMWXi9X4K5Fm7Seqe2zOIw7UwFS575K081jmE";
+
+        $response = $this->withHeader('Authorization', $token)->json('POST', '/api/user-management/connect');
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['token']);
+
+        $request = [
+            'email' => 'test@gmail.com',
+        ];
+        $this->assertDatabaseHas('users', $request);
+
+    }
+
     protected function loginToken()
     {
         $dataLogin = ['username' => 'admin', 'password' => '123456789', 'email' => 'admin@test.com'];
