@@ -579,10 +579,9 @@ class UserTest extends TestCase
         $this->assertAuthorization($response);
 
         $token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTYzNTkzMTk1NywiZXhwIjo0MjI3OTMxOTU3fQ.ndiJq4bMWXi9X4K5Fm7Seqe2zOIw7UwFS575K081jmE";
-
         $response = $this->withHeader('Authorization', $token)->json('POST', '/api/user-management/connect');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertJsonStructure(['token']);
 
         $request = [

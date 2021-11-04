@@ -36,6 +36,12 @@ class ConnectController extends ApiController
     {
         try {
             $token = JWTAuth::getToken();
+            if (empty($token)) {
+                return response([
+                    'message' => 'The Authorization data was invalid.',
+                    "errors" => 'Bearer Token was not found',
+                ]);
+            }
             $email = $this->JWTDecode($token);
             $data = [
                 'username' => explode('@', $email)[ 0 ],
@@ -55,9 +61,9 @@ class ConnectController extends ApiController
 
     public function JWTDecode($token)
     {
-        $object = json_decode(base64_decode(str_replace('_', '/', str_replace('-', '+', explode('.', $token)[1]))));
+        $object = json_decode(base64_decode(str_replace('_', '/', str_replace('-', '+', explode('.', $token)[ 1 ]))));
         $array = json_decode(json_encode($object), true);
-        return $array['email'];
+        return $array[ 'email' ];
     }
 
 }
