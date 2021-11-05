@@ -37,22 +37,22 @@ class ConnectController extends ApiController
         try {
             $token = JWTAuth::getToken();
             if (empty($token)) {
-                return response([
-                    'message' => 'The Authorization data was invalid.',
-                    "errors" => 'Bearer Token was not found',
-                ]);
+                throw new UnauthorizedHttpException('The Authorization data was invalid');
             }
+
+            // $payload = JWTAuth::getPayload($token)->toArray();
+            // $email = $payload['email'];
+
             $email = $this->JWTDecode($token);
-            $data = [
-                'username' => explode('@', $email)[ 0 ],
-                'email' => $email,
-            ];
-            $user = $this->repository->findByField('email', $email)->first();
-            if (!$user) {
-                $this->repository->create($data);
-            } else {
-                $token = JWTAuth::fromUser($user);
-            }
+            $user = $this->repository->firstOrCreate(
+                [
+                    'email' => $email,
+                    'verify_token' => "",
+                    'username' => explode('@', $email)[ 0 ]
+                ]
+            );
+            $token = JWTAuth::fromUser($user);
+
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }

@@ -171,7 +171,7 @@ class TestCase extends OrchestraTestCase
 
     public function assertAuthorization($response)
     {
-        $response->assertStatus(200);
+        $response->assertStatus(401);
         $response->assertJson([
             'message' => 'The Authorization data was invalid.',
             "errors" => 'Bearer Token was not found',
