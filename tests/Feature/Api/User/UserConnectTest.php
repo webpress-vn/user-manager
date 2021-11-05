@@ -13,10 +13,15 @@ class UserConnectTest extends TestCase
     {
         $token = "";
         $response = $this->withHeader('Authorization', $token)->json('POST', '/api/user-management/connect');
-
         $this->assertAuthorization($response);
 
-        $token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTYzNTkzMTk1NywiZXhwIjo0MjI3OTMxOTU3fQ.ndiJq4bMWXi9X4K5Fm7Seqe2zOIw7UwFS575K081jmE";
+        $data = [
+            'sub'=>'',
+            'email'=>'test@gmail.com'
+        ];
+        $factory = JWTFactory::customClaims($data);
+        $payload = $factory->make();
+        $token = 'Bearer'.JWTAuth::encode($payload);
 
         $response = $this->withHeader('Authorization', $token)->json('POST', '/api/user-management/connect');
 

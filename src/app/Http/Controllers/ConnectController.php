@@ -36,6 +36,7 @@ class ConnectController extends ApiController
     {
         try {
             $token = JWTAuth::getToken();
+
             if (empty($token)) {
                 throw new UnauthorizedHttpException('The Authorization data was invalid');
             }
@@ -52,7 +53,6 @@ class ConnectController extends ApiController
                 ]
             );
             $token = JWTAuth::fromUser($user);
-
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
