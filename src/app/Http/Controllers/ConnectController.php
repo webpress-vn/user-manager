@@ -35,21 +35,35 @@ class ConnectController extends ApiController
     public function connect()
     {
         try {
-            $user = $this->repository->findByField('username', 'admin@vmms.vn')->first();
-            
-            if (!$user) {
-                $user = $this->repository->findByField('email', 'admin@vmms.vn')->first();
-                if (!$user) {
-                    throw new NotFoundException('user');
-                }
+            $token = JWTAuth::getToken();
+
+            if (empty($token)) {
+                throw new UnauthorizedHttpException('The Authorization data was invalid');
             }
 
-            $token = JWTAuth::fromUser($user);
+            // $payload = JWTAuth::getPayload($token)->toArray();
+            // $email = $payload['email'];
 
+            $email = $this->JWTDecode($token);
+            $user = $this->repository->firstOrCreate(
+                [
+                    'email' => $email,
+                    'verify_token' => "",
+                    'username' => explode('@', $email)[ 0 ]
+                ]
+            );
+            $token = JWTAuth::fromUser($user);
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
-
         return $this->response->array(compact('token'));
     }
+
+    public function JWTDecode($token)
+    {
+        $object = json_decode(base64_decode(str_replace('_', '/', str_replace('-', '+', explode('.', $token)[ 1 ]))));
+        $array = json_decode(json_encode($object), true);
+        return $array[ 'email' ];
+    }
+
 }
