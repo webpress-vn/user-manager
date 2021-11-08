@@ -29,7 +29,7 @@ trait Authenticate
         $this->repository = $repository;
         $this->validator  = $validator;
         $this->entity     = $repository->getEntity();
-        $this->middleware('jwt.auth', ['except' => ['authenticate', 'socialLogin', 'saveOrUpdateUser']]);
+        $this->middleware('jwt.auth', ['except' => ['authenticate', 'socialLogin', 'saveOrUpdateUser', 'refresh']]);
 
         if (isset(config('user.transformers')['user'])) {
             $this->transformer = config('user.transformers.user');
@@ -52,6 +52,34 @@ trait Authenticate
         }
 
         return $this->response->array(compact('token'));
+    }
+    public function refresh()
+    {
+        return $this->respondWithToken(JWTAuth::refresh(JWTAuth::getToken()));
+    }
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60
+        ]);
+    }
+
+    public function invalidateToken() {
+        try {
+           return response()->json(JWTAuth::invalidate());
+
+        } catch (JWTException $e) {
+            return response()->json(['message' => 'Logout failed'], $e->getStatusCode());
+        }
     }
 
     public function me(Request $request)
@@ -132,7 +160,7 @@ trait Authenticate
             $check_user = $this->entity->where('account_type', $provider)->where('social_id', $social_account->getId())->first();
             if (!$check_user) {
                 $user  = $this->saveOrUpdateUser($social_account, $provider);
-                
+
                 event(new UserRegisteredBySocialAccountEvent($user));
 
             } else {
@@ -143,7 +171,7 @@ trait Authenticate
         }
 
         $token = JWTAuth::fromUser($user);
-        
+
         event(new UserLoggedInEvent($user));
 
         return $this->response->array(compact('token'));

@@ -169,6 +169,11 @@ class TestCase extends OrchestraTestCase
         ]);
     }
 
+    public function assertAuthorization($response)
+    {
+        $response->assertStatus(401);
+    }
+
     protected function attachRolesToUser($user, $roles)
     {
         $roles->each(function ($role) use ($user) {

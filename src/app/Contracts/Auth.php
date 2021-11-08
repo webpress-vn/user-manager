@@ -10,6 +10,8 @@ interface Auth
 {
     public function __construct(UserRepository $repository, AuthValidatorInterface $validator);
     public function authenticate(Request $request);
+    public function refresh();
+    public function invalidateToken();
     public function me(Request $request);
     public function socialLogin(Request $request);
 }
