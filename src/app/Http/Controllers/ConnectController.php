@@ -5,6 +5,7 @@ namespace VCComponent\Laravel\User\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use VCComponent\Laravel\User\Contracts\Auth as UserAuthContract;
 use VCComponent\Laravel\User\Contracts\AuthValidatorInterface;
 use VCComponent\Laravel\User\Repositories\UserRepository;

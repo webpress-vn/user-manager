@@ -4,6 +4,8 @@ namespace VCComponent\Laravel\User\Test\Feature\Api\User;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use VCComponent\Laravel\User\Test\TestCase;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Facades\JWTFactory;
 
 class UserConnectTest extends TestCase
 {
@@ -16,12 +18,12 @@ class UserConnectTest extends TestCase
         $this->assertAuthorization($response);
 
         $data = [
-            'sub'=>'',
-            'email'=>'test@gmail.com'
+            'sub' => '',
+            'email' => 'test@gmail.com'
         ];
         $factory = JWTFactory::customClaims($data);
         $payload = $factory->make();
-        $token = 'Bearer'.JWTAuth::encode($payload);
+        $token = 'Bearer' . JWTAuth::encode($payload);
 
         $response = $this->withHeader('Authorization', $token)->json('POST', '/api/user-management/connect');
 
