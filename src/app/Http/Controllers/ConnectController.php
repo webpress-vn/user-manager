@@ -2,11 +2,10 @@
 
 namespace VCComponent\Laravel\User\Http\Controllers;
 
-use http\Exception\UnexpectedValueException;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use VCComponent\Laravel\User\Contracts\Auth as UserAuthContract;
 use VCComponent\Laravel\User\Contracts\AuthValidatorInterface;
 use VCComponent\Laravel\User\Repositories\UserRepository;
@@ -23,11 +22,11 @@ class ConnectController extends ApiController
     public function __construct(UserRepository $repository, AuthValidatorInterface $validator)
     {
         $this->repository = $repository;
-        $this->validator = $validator;
-        $this->entity = $repository->getEntity();
+        $this->validator  = $validator;
+        $this->entity     = $repository->getEntity();
         // $this->middleware('jwt.auth', ['except' => ['authenticate', 'socialLogin', 'saveOrUpdateUser']]);
 
-        if (isset(config('user.transformers')[ 'user' ])) {
+        if (isset(config('user.transformers')['user'])) {
             $this->transformer = config('user.transformers.user');
         } else {
             $this->transformer = UserTransformer::class;
@@ -40,7 +39,7 @@ class ConnectController extends ApiController
             $token = JWTAuth::getToken();
 
             if (empty($token)) {
-                throw new UnexpectedValueException('The Authorization data was invalid');
+                throw new UnauthorizedHttpException('The Authorization data was invalid');
             }
 
             // $payload = JWTAuth::getPayload($token)->toArray();

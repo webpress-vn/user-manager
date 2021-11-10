@@ -4,6 +4,8 @@ namespace VCComponent\Laravel\User\Test\Feature\Api\User;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use VCComponent\Laravel\User\Test\TestCase;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Facades\JWTFactory;
 
 class UserConnectTest extends TestCase
 {
