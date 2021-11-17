@@ -3,6 +3,7 @@
 namespace VCComponent\Laravel\User\Http\Controllers;
 
 use Illuminate\Support\Facades\Hash;
+use NF\Roles\Models\Role;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -53,6 +54,7 @@ class ConnectController extends ApiController
                     'username' => explode('@', $email)[ 0 ]
                 ]
             );
+            $this->attachAdminRole($user);
             $token = JWTAuth::fromUser($user);
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
@@ -65,6 +67,15 @@ class ConnectController extends ApiController
         $object = json_decode(base64_decode(str_replace('_', '/', str_replace('-', '+', explode('.', $token)[ 1 ]))));
         $array = json_decode(json_encode($object), true);
         return $array[ 'email' ];
+    }
+
+    protected function attachAdminRole($user) {
+        if (!$user->isAdministrator()) {
+            $admin_role = Role::whereIn('slug', ['admin', 'super_admin'])->first();
+            if($admin_role) {
+                $user->attachRole($admin_role->id);
+            }
+        }
     }
 
 }
