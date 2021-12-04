@@ -28,8 +28,10 @@ Route::group(['prefix' => '/'], function () {
             $view = config('user.test_mode') === true ? view('userTest::forgot-password') : view('auth.registration');
             return $view;
         });
-
         Route::post('register', 'VCComponent\Laravel\User\Http\Controllers\Web\RegisterController@register')->name('register');
         Route::post('info-edit', 'VCComponent\Laravel\User\Http\Controllers\Web\InformationController@editInfo')->name('info.edit');
+        Route::get('login/{driver}', 'VCComponent\Laravel\User\Http\Controllers\Web\SocialiteLoginController@redirectToProvider');
+        Route::get('login/{driver}/callback', 'VCComponent\Laravel\User\Http\Controllers\Web\SocialiteLoginController@handleProviderCallback');
+
     });
 });
