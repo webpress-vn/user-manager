@@ -1,32 +1,35 @@
 # User Component for Laravel and Lumen
 
-- [User Component for Laravel and Lumen](#User-Component-for-Laravel-and-Lumen)
-- [Installation](#Installation)
-  - [Composer](#Composer)
-  - [Service provider](#Service-provider)
-    - [Laravel](#Laravel)
-    - [Lumen](#Lumen)
-  - [Config and Migration](#Config-and-Migration)
-    - [Laravel](#Laravel-1)
-    - [Lumen](#Lumen-1)
-  - [Environment](#Environment)
-- [Configuration](#Configuration)
-  - [URL Namespace](#URL-Namespace)
-  - [User Model](#User-Model)
-  - [User Transformer](#User-Transformer)
-    - [Laravel](#Laravel-2)
-    - [Lumen](#Lumen-2)
-  - [Social login](#Social-login)
-- [User Model](#User-Model-1)
-  - [User Schema](#User-Schema)
-  - [User Management](#User-Management)
-- [APIs List](#APIs-List)
-- [Routing](#Routing)
-  - [Custom Routing](#Custom-Routing)
-  - [Custom Controller](#Custom-Controller)
-  - [Events](#Events)
-  - [Middleware](#Middleware)
-  - [Additional Configuration](#Additional-Configuration)
+- [User Component for Laravel and Lumen](#user-component-for-laravel-and-lumen)
+- [Installation](#installation)
+  - [Composer](#composer)
+  - [Service provider](#service-provider)
+    - [Laravel](#laravel)
+    - [Lumen](#lumen)
+  - [Config and Migration](#config-and-migration)
+    - [Laravel](#laravel-1)
+    - [Lumen](#lumen-1)
+  - [Environment](#environment)
+- [Configuration](#configuration)
+  - [URL Namespace](#url-namespace)
+  - [User Model](#user-model)
+  - [User Transformer](#user-transformer)
+    - [Laravel](#laravel-2)
+    - [Lumen](#lumen-2)
+  - [Social login](#social-login)
+- [User Model](#user-model-1)
+  - [User Schema](#user-schema)
+  - [User Management](#user-management)
+- [APIs List](#apis-list)
+- [Routing](#routing)
+  - [Custom Routing](#custom-routing)
+  - [Custom Controller](#custom-controller)
+  - [Events](#events)
+  - [Middleware](#middleware)
+  - [Additional Configuration](#additional-configuration)
+- [Social media login](#social-media-login)
+  - [Configuration](#configuration-1)
+  - [Use in view](#use-in-view)
 
 The User Component package provides a convenient way of managing application's users.
 
@@ -727,3 +730,51 @@ Below are the middlewares that the package provides:
 The package contains 3 other packages which are `dingo/api`, `tymon/jwt-auth`, `prettus/l5-repository`.
 
 Other configurations of these packages, please follow their documentation.
+
+# Social media login
+## Configuration
+Configure config/app.php
+Add providers
+```php
+'providers' => [
+   // Other service providers...
+
+   Laravel\Socialite\SocialiteServiceProvider::class,
+],
+```
+Add alias
+```php
+'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+```
+Configure config/services.php
+```php
+'facebook' => [
+    'client_id' => env('FACEBOOK_APP_ID'),
+    'client_secret' => env('FACEBOOK_APP_SECRET'),
+    'redirect' => env('FACEBOOK_APP_CALLBACK_URL'),
+],
+'google' => [
+    'client_id' => env('GOOGLE_APP_ID'),
+    'client_secret' => env('GOOGLE_APP_SECRET'),
+    'redirect' => env('GOOGLE_APP_CALLBACK_URL'),
+],
+```
+Configure env
+```php
+FACEBOOK_CLIENT_ID="App id goes here"
+FACEBOOK_CLIENT_SECRET="Secret goes herre"
+FACEBOOK_CALLBACK_URL="Url callback"
+
+GOOGLE_CLIENT_ID="App id goes here"
+GOOGLE_CLIENT_SECRET="Secret goes herre"
+GOOGLE_REDIRECT_URL="Url callback"
+```
+## Use in view
+```php
+@include('user_component::auth.socialite', 
+[ 'iconGg' => '<img src="/assets/images/index/gg.png"alt="Google">', 
+  'iconFb' => '<img src="/assets/images/index/fb.png" alt="Facebook">'
+])
+```
+
+

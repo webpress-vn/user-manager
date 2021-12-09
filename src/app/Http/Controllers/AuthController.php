@@ -3,8 +3,8 @@
 namespace VCComponent\Laravel\User\Http\Controllers;
 
 use VCComponent\Laravel\User\Contracts\Auth as UserAuthContract;
-use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 use VCComponent\Laravel\User\Traits\Authenticate;
+use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 
 class AuthController extends ApiController implements UserAuthContract
 {
