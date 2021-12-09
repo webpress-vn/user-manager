@@ -5,6 +5,7 @@ namespace VCComponent\Laravel\User\Providers;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use VCComponent\Laravel\User\Auth\Auth as AuthHelper;
+use VCComponent\Laravel\User\Commands\PasswordResetCommand;
 use VCComponent\Laravel\User\Contracts\AdminUserController;
 use VCComponent\Laravel\User\Contracts\Auth;
 use VCComponent\Laravel\User\Contracts\AuthValidatorInterface;
@@ -22,7 +23,7 @@ use VCComponent\Laravel\User\Repositories\UserRepository;
 use VCComponent\Laravel\User\Repositories\UserRepositoryEloquent;
 use VCComponent\Laravel\User\Validators\AuthValidator;
 use VCComponent\Laravel\User\Validators\UserValidator;
-use VCComponent\Laravel\User\Commands\PasswordResetCommand;
+
 class UserComponentProvider extends ServiceProvider
 {
     private $adminController;
@@ -71,17 +72,18 @@ class UserComponentProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations/');
 
         $this->publishes([
-            __DIR__ . '/../../config/user.php'                                => config_path('user.php'),
-            __DIR__ . '/../../views/auth/errow-verify.blade.php'              => base_path('/resources/views/auth/errow-verify.blade.php'),
-            __DIR__ . '/../../views/auth/verify.blade.php'                    => base_path('/resources/views/auth/verify.blade.php'),
-            __DIR__ . '/../../resources/views/auth/account.blade.php'         => base_path('/resources/views/auth/account.blade.php'),
+            __DIR__ . '/../../config/user.php' => config_path('user.php'),
+            __DIR__ . '/../../views/auth/errow-verify.blade.php' => base_path('/resources/views/auth/errow-verify.blade.php'),
+            __DIR__ . '/../../views/auth/verify.blade.php' => base_path('/resources/views/auth/verify.blade.php'),
+            __DIR__ . '/../../resources/views/auth/account.blade.php' => base_path('/resources/views/auth/account.blade.php'),
             __DIR__ . '/../../resources/views/auth/forgot-password.blade.php' => base_path('/resources/views/auth/forgot-password.blade.php'),
-            __DIR__ . '/../../resources/views/auth/login.blade.php'           => base_path('/resources/views/auth/login.blade.php'),
-            __DIR__ . '/../../resources/views/auth/registration.blade.php'    => base_path('/resources/views/auth/registration.blade.php'),
-            __DIR__ . '/../../resources/views/auth/reset-password.blade.php'  => base_path('/resources/views/auth/reset-password.blade.php'),
-            __DIR__ . '/../../resources/js/user/user.js'                      => base_path('/resources/js/user/user.js'),
-            __DIR__ . '/../../resources/sass/auth/login.scss'                 => base_path('/resources/sass/auth/login.scss'),
-            __DIR__ . '/../../database/seeds/UserSeeder.php'                  => base_path('/database/seeds/UserSeeder.php'),
+            __DIR__ . '/../../resources/views/auth/login.blade.php' => base_path('/resources/views/auth/login.blade.php'),
+            __DIR__ . '/../../resources/views/auth/registration.blade.php' => base_path('/resources/views/auth/registration.blade.php'),
+            __DIR__ . '/../../resources/views/auth/reset-password.blade.php' => base_path('/resources/views/auth/reset-password.blade.php'),
+            __DIR__ . '/../../resources/js/user/user.js' => base_path('/resources/js/user/user.js'),
+            __DIR__ . '/../../resources/sass/auth/login.scss' => base_path('/resources/sass/auth/login.scss'),
+            __DIR__ . '/../../resources/sass/auth/socialite.scss' => base_path('/resources/sass/auth/socialite.scss'),
+            __DIR__ . '/../../database/seeds/UserSeeder.php' => base_path('/database/seeds/UserSeeder.php'),
 
         ], 'config');
 
@@ -169,7 +171,7 @@ class UserComponentProvider extends ServiceProvider
         }
     }
 
-    protected function registerPolicies() 
+    protected function registerPolicies()
     {
         $this->app->bind(UserPolicyInterface::class, UserPolicy::class);
     }
