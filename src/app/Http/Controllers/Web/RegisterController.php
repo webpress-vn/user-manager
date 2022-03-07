@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use NF\Roles\Models\Role;
 use VCComponent\Laravel\User\Entities\User;
 
 class RegisterController extends Controller
@@ -79,7 +80,7 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'username'     => $data['username'],
             'first_name'   => $data['first_name'],
             'last_name'    => $data['last_name'],
@@ -89,6 +90,14 @@ class RegisterController extends Controller
             'password'     => $data['password'],
             'verify_token' => str::random(32),
         ]);
-    }
 
+        if ($default_role = config('user.default_role')) {
+            $role = Role::where('slug', $default_role)->first();
+            if ($role) {
+                $user->attachRole($role);
+            }
+        }
+
+        return $user;
+    }
 }

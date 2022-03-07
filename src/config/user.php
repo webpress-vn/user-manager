@@ -24,5 +24,6 @@ return [
             'except'     => [],
         ]
     ],
-    'test_mode' => false
+    'default_role' => null,
+    'test_mode' => false,
 ];
