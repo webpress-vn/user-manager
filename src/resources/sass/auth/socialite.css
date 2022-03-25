@@ -1,0 +1,13 @@
+.social-login {
+  padding-top: 18px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0 auto;
+  display: block;
+}
+
+.social-login .social-google {
+  margin-right: 15px;
+}
+/*# sourceMappingURL=socialite.css.map */

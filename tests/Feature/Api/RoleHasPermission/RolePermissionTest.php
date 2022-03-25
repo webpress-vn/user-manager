@@ -3,7 +3,9 @@
 namespace VCComponent\Laravel\User\Test\Feature\Api\RoleHasPermission;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use NF\Roles\Models\Permission;
+use NF\Roles\Models\PermissionGroup;
 use NF\Roles\Models\Role;
 use VCComponent\Laravel\User\Test\TestCase;
 
@@ -73,6 +75,7 @@ class RolePermissionTest extends TestCase
     public function can_detach_permission_from_role_by_admin_router()
     {
         $role        = factory(Role::class)->create();
+        $permission_group = PermissionGroup::create(['name'=> 'haha', 'slug' => 'haha']);
         $permissions = factory(Permission::class, 3)->create();
         $this->attachPermissionsToRole($role, $permissions);
 

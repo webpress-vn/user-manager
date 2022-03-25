@@ -3,6 +3,7 @@
 namespace VCComponent\Laravel\User\Test\Feature\Api\UserHasRole;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use NF\Roles\Models\Role;
 use VCComponent\Laravel\User\Entities\User;
 use VCComponent\Laravel\User\Test\TestCase;
@@ -134,7 +135,9 @@ class UserRoleTest extends TestCase
     {
         $dataLogin = ['email' => 'integrationTest@gmail.com', 'password'=> '123456789&'];
         $admin  = factory(User::class)->create();
-       
+        $admin->attachRole(factory(Role::class)->create(['slug' => 'admin']));
+        Passport::actingAs($admin);
+
         $request = [];
 
         $response = $this->json('POST', 'api/user-management/admin/roles/sync', $request);
@@ -147,10 +150,8 @@ class UserRoleTest extends TestCase
         $roles = factory(Role::class, 3)->create();
 
         $this->attachRolesToUser($user, $roles);
-        
-        $token = $this->loginToken();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->get('api/user-management/admin/users/'. $user->id. '?include=roles');
+        $response = $this->get('api/user-management/admin/users/'. $user->id. '?include=roles');
 
         $response->assertOk();
         

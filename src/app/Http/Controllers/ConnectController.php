@@ -2,16 +2,15 @@
 
 namespace VCComponent\Laravel\User\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use NF\Roles\Models\Role;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use VCComponent\Laravel\User\Contracts\Auth as UserAuthContract;
 use VCComponent\Laravel\User\Contracts\AuthValidatorInterface;
 use VCComponent\Laravel\User\Repositories\UserRepository;
 use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
-use VCComponent\Laravel\Vicoders\Core\Exceptions\NotFoundException;
 
 class ConnectController extends ApiController
 {
@@ -25,7 +24,6 @@ class ConnectController extends ApiController
         $this->repository = $repository;
         $this->validator  = $validator;
         $this->entity     = $repository->getEntity();
-        // $this->middleware('jwt.auth', ['except' => ['authenticate', 'socialLogin', 'saveOrUpdateUser']]);
 
         if (isset(config('user.transformers')['user'])) {
             $this->transformer = config('user.transformers.user');
@@ -34,17 +32,14 @@ class ConnectController extends ApiController
         }
     }
 
-    public function connect()
+    public function connect(Request $request)
     {
         try {
-            $token = JWTAuth::getToken();
+            $token = $request->bearerToken();
 
             if (empty($token)) {
                 throw new UnauthorizedHttpException('The Authorization data was invalid');
             }
-
-            // $payload = JWTAuth::getPayload($token)->toArray();
-            // $email = $payload['email'];
 
             $email = $this->JWTDecode($token);
             $user = $this->repository->firstOrCreate(
@@ -55,10 +50,12 @@ class ConnectController extends ApiController
                 ]
             );
             $this->attachAdminRole($user);
-            $token = JWTAuth::fromUser($user);
-        } catch (JWTException $e) {
+            $token = $user->createToken(['auth'])->accessToken;
+        } catch (UnauthorizedHttpException $e) {
+            return response()->json(['message' => 'The Authorization data was invalid', 'status_code' => 401], 401);
+        } catch (\Exception $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
-        }
+        } 
         return $this->response->array(compact('token'));
     }
 

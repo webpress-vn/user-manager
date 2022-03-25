@@ -4,13 +4,10 @@ namespace VCComponent\Laravel\User\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use VCComponent\Laravel\User\Contracts\UserValidatorInterface;
 use VCComponent\Laravel\User\Events\ResendVerifyEmailEvent;
 use VCComponent\Laravel\User\Events\UserEmailVerifiedEvent;
@@ -28,7 +25,7 @@ trait UserMethodsFrontend
         $this->repository = $repository;
         $this->entity     = $repository->getEntity();
         $this->validator  = $validator;
-        $this->middleware('jwt.auth', ['except' => [
+        $this->middleware('auth:api', ['except' => [
             'index',
             'list',
             'show',
@@ -144,7 +141,7 @@ trait UserMethodsFrontend
 
         event(new UserRegisteredEvent($user));
 
-        $token = JWTAuth::fromUser($user);
+        $token = $user->createToken(['registed'])->accessToken;
 
         return $this->response->array(compact('token'));
     }

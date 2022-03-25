@@ -1,0 +1,323 @@
+.limiter {
+  background: #f2f2f2;
+}
+
+.limiter input {
+  border: none;
+  outline: none;
+}
+
+.limiter .container-login {
+  width: 100%;
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 15px;
+}
+
+.limiter .container-login .wrap-login {
+  width: 390px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 77px 55px 33px 55px;
+  -webkit-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.limiter .container-login .wrap-account {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 77px 55px 33px 55px;
+  -webkit-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.limiter .container-login .wrap-account .checkbx {
+  /* On mouse-over*/
+  /* When the checkbox is checked */
+  /* Show the checkmark when checked */
+  /* Style the checkmark/indicator */
+}
+
+.limiter .container-login .wrap-account .checkbx .cbx {
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  font-size: 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.limiter .container-login .wrap-account .checkbx .cbx p {
+  color: #788995;
+  font-size: 16px;
+  margin-top: 11px;
+}
+
+.limiter .container-login .wrap-account .checkbx .cbx .cbx-width {
+  width: 100%;
+}
+
+.limiter .container-login .wrap-account .checkbx .cbx input {
+  opacity: 0;
+}
+
+.limiter .container-login .wrap-account .checkbx .cbx .checkmark {
+  position: absolute;
+  left: 0;
+  margin-top: 4px;
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 1px solid #d6cece;
+  border-radius: 50%;
+}
+
+.limiter .container-login .wrap-account .checkbx .cbx .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.limiter .container-login .wrap-account .checkbx .cbx:hover input ~ .checkmark {
+  background-color: #d6cece;
+}
+
+.limiter .container-login .wrap-account .checkbx .cbx input:checked ~ .checkmark {
+  background-color: #fff;
+  border: 1px solid #242424;
+}
+
+.limiter .container-login .wrap-account .checkbx .cbx input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.limiter .container-login .wrap-account .checkbx .cbx .checkmark:after {
+  width: 8px;
+  margin: 4px;
+  height: 8px;
+  border-radius: 10px;
+  background: #242424;
+}
+
+.limiter .container-login .wrap-account .label {
+  margin-bottom: 10px;
+}
+
+.limiter .container-login .wrap-account .option {
+  padding: 0px 5px;
+  border: none;
+  background-color: #ffffff;
+  margin-bottom: 10px;
+  height: 30px;
+}
+
+.limiter .container-login .wrap-account .form_acc {
+  border-radius: 6px;
+  border: solid 0.5px #d8d8d8;
+  background-color: #ffffff;
+  margin-bottom: 10px;
+  height: 30px;
+}
+
+.limiter .container-login .wrap-account .form_name {
+  width: 47%;
+}
+
+.limiter .container-login .wrap-account .form_name input {
+  width: 100%;
+  outline: none;
+  padding: 5px 14px;
+}
+
+.limiter .container-login .wrap-account .date {
+  margin-right: 24px;
+}
+
+.limiter .container-login .wrap-account .date input {
+  outline: none;
+  padding: 5px 14px;
+}
+
+.limiter .container-login .wrap-account .account-type {
+  font-size: 14px;
+  line-height: 1.36;
+  color: #707070;
+  margin: 0 25px;
+  min-width: 90px;
+}
+
+.limiter .container-login .wrap-account .account-info {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.36;
+  text-align: left;
+  color: #242424;
+  margin: 0 25px;
+}
+
+.limiter .container-login .wrap-account .line {
+  border-bottom: 1px solid #d8d8d8;
+  margin: 10px 0 20px 0;
+  width: 100%;
+}
+
+.limiter .container-login .wrap-account .btn-next-comeback {
+  margin-top: 30px;
+}
+
+.limiter .container-login .wrap-account .btn-next-comeback .btn-next {
+  background-color: #ffffff;
+  color: #242424;
+  border: solid 1px #242424;
+  padding: 10px 25px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.limiter .container-login .wrap-account .btn-next-comeback .btn-order {
+  text-decoration: none;
+  background: #242424;
+  color: white;
+  border: solid 1px #fff;
+  padding: 10px 42px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+@media only screen and (max-width: 991px) {
+  .limiter .container-login .wrap-account .btn-next-comeback {
+    padding-bottom: 50px;
+  }
+}
+
+.limiter .container-login .wrap-account table tr {
+  height: 40px;
+}
+
+.limiter .container-login .login-form .login-form-title {
+  display: block;
+  font-weight: bold;
+  font-size: 30px;
+  color: #333333;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.limiter .container-login .login-form .wrap-input-form-two {
+  width: 45%;
+  position: relative;
+  border-bottom: 2px solid #adadad;
+  margin-bottom: 25px;
+}
+
+.limiter .container-login .login-form .wrap-input {
+  width: 100%;
+  position: relative;
+  border-bottom: 2px solid #adadad;
+}
+
+.limiter .container-login .login-form .wrap-input .btn-show-pass {
+  font-size: 15px;
+  color: #999999;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  right: 0;
+  padding-right: 5px;
+  cursor: pointer;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.limiter .container-login .login-form .input {
+  font-size: 15px;
+  color: #555555;
+  line-height: 1.2;
+  display: block;
+  width: 100%;
+  height: 45px;
+  background: transparent;
+  padding: 0 5px;
+}
+
+.limiter .container-login .login-form .focus-input::after {
+  font-size: 15px;
+  color: #999999;
+  line-height: 1.2;
+  display: block;
+  width: 100%;
+  position: absolute;
+  top: 16px;
+  left: 0px;
+  padding-left: 5px;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.limiter .container-login .login-form .text-danger {
+  margin: 10px 0 37px 0;
+}
+
+.limiter .container-login .login-form .container-login-form-btn {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding-top: 13px;
+}
+
+.limiter .container-login .login-form .container-login-form-btn .wrap-login-form-btn {
+  width: 100%;
+  display: block;
+  position: relative;
+  z-index: 1;
+  border-radius: 25px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.limiter .container-login .login-form .container-login-form-btn .wrap-login-form-btn .login-form-btn {
+  border: none;
+  font-size: 15px;
+  color: #fff;
+  line-height: 1.2;
+  text-transform: uppercase;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0 20px;
+  width: 100%;
+  height: 50px;
+  background: #242424;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+}
+/*# sourceMappingURL=login.css.map */

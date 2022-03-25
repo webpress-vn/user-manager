@@ -20,18 +20,17 @@ class UserConnectTest extends TestCase
     public function can_connect_user_by_api_router()
     {
         $token = "";
-        $response = $this->withHeader('Authorization', $token)->json('POST', '/api/user-management/connect');
+        $response = $this->withHeader('Authorization', "Bearer " . $token)->json('POST', '/api/user-management/connect');
         $this->assertAuthorization($response);
 
         $data = [
             'sub' => '',
             'email' => 'test@gmail.com'
         ];
-        $factory = JWTFactory::customClaims($data);
-        $payload = $factory->make();
-        $token = 'Bearer' . JWTAuth::encode($payload);
+        
+        $token = $this->fakeJWt($data);
 
-        $response = $this->withHeader('Authorization', $token)->json('POST', '/api/user-management/connect');
+        $response = $this->withHeader('Authorization', "Bearer " . $token)->json('POST', '/api/user-management/connect');
 
         $response->assertOk();
         $response->assertJsonStructure(['token']);
@@ -55,11 +54,10 @@ class UserConnectTest extends TestCase
             'sub' => '',
             'email' => 'test@gmail.com'
         ];
-        $factory = JWTFactory::customClaims($data);
-        $payload = $factory->make();
-        $token = 'Bearer' . JWTAuth::encode($payload);
 
-        $response = $this->withHeader('Authorization', $token)->json('POST', '/api/user-management/connect');
+        $token = $this->fakeJWt($data);
+
+        $response = $this->withHeader('Authorization', "Bearer " . $token)->json('POST', '/api/user-management/connect');
 
         $response->assertOk();
         $response->assertJsonStructure(['token']);
@@ -97,11 +95,10 @@ class UserConnectTest extends TestCase
             'sub' => '',
             'email' => 'test@gmail.com'
         ];
-        $factory = JWTFactory::customClaims($data);
-        $payload = $factory->make();
-        $token = 'Bearer' . JWTAuth::encode($payload);
 
-        $response = $this->withHeader('Authorization', $token)->json('POST', '/api/user-management/connect');
+        $token = $this->fakeJWt($data);
+
+        $response = $this->withHeader('Authorization', "Bearer " . $token)->json('POST', '/api/user-management/connect');
 
         $response->assertOk();
         $response->assertJsonStructure(['token']);
@@ -112,5 +109,28 @@ class UserConnectTest extends TestCase
             'role_id' => $role->id,
             'user_id' => $user->id,
         ]);
+    }
+
+    public function fakeJWt($data)
+    {
+        $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
+        
+        // Create token payload as a JSON string
+        $payload = json_encode($data);
+        
+        // Encode Header to Base64Url String
+        $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+        
+        // Encode Payload to Base64Url String
+        $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+        
+        // Create Signature Hash
+        $signature = hash_hmac('sha256', $base64UrlHeader . "." . $base64UrlPayload, 'abC123!', true);
+        
+        // Encode Signature to Base64Url String
+        $base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+        
+        // Create JWT
+        return $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
     }
 }

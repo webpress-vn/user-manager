@@ -5,6 +5,7 @@ namespace VCComponent\Laravel\User\Test\Feature\Api\User;
 use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Laravel\Passport\Passport;
 use NF\Roles\Models\Role;
 use VCComponent\Laravel\User\Entities\User;
 use VCComponent\Laravel\User\Entities\UserHasRole;
@@ -70,9 +71,9 @@ class UserTest extends TestCase
      */
     public function can_get_me_by_web_api_router()
     {
-        $token = $this->loginToken();
+        Passport::actingAs(factory(User::class)->create(['username' => 'admin', 'email' => 'admin@test.com']));
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/user-management/me');
+        $response = $this->json('GET', 'api/user-management/me');
 
         $response->assertOk();
         $response->assertJson(['data' => ['username' => 'admin', 'email' => 'admin@test.com']]);
@@ -83,13 +84,13 @@ class UserTest extends TestCase
      */
     public function can_update_avatar_me_by_web_api_router()
     {
-        $token    = $this->loginToken();
+        Passport::actingAs(factory(User::class)->create());
         $request  = [];
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/me/avatar', $request);
+        $response = $this->json('PUT', 'api/user-management/me/avatar', $request);
         $this->assertValidation($response, 'avatar', "The avatar field is required.");
 
         $request  = ['avatar' => 'avatarTest'];
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/me/avatar', $request);
+        $response = $this->json('PUT', 'api/user-management/me/avatar', $request);
 
         $response->assertOk();
         $response->assertJson(['success' => true]);
@@ -100,9 +101,11 @@ class UserTest extends TestCase
      */
     public function can_change_password_me_by_web_api_router()
     {
-        $token    = $this->loginToken();
+        $user = factory(User::class)->create(['password' => '123456789']);
+        $user->attachRole(factory(Role::class)->create(['slug' => 'admin']));
+        Passport::actingAs($user);
         $request  = [];
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/me/password', $request);
+        $response = $this->json('PUT', 'api/user-management/me/password', $request);
         $this->assertValidation($response, 'old_password', "The old password field is required.");
         $this->assertValidation($response, 'new_password', "The new password field is required.");
         $this->assertValidation($response, 'new_password_confirmation', "The new password confirmation field is required.");
@@ -113,12 +116,12 @@ class UserTest extends TestCase
             'new_password_confirmation' => '091828421',
 
         ];
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/me/password', $request);
+        $response = $this->json('PUT', 'api/user-management/me/password', $request);
 
         $response->assertJson(['message' => "Password is not confirmed"]);
 
         $request['new_password_confirmation'] = $request['new_password'];
-        $response                             = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/me/password', $request);
+        $response                             = $this->json('PUT', 'api/user-management/me/password', $request);
 
         $response->assertOk();
         $response->assertJson(['success' => true]);
@@ -129,7 +132,6 @@ class UserTest extends TestCase
      */
     public function can_get_reset_link_email_by_web_api_router()
     {
-        $token    = $this->loginToken();
         $request  = [];
         $response = $this->json('POST', 'api/user-management/password/email', $request);
 
@@ -219,7 +221,7 @@ class UserTest extends TestCase
 
         $customer = factory(User::class)->create();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/user-management/admin/users/' . $customer->id . '/resend-verify-email');
+        $response = $this->json('POST', 'api/user-management/admin/users/' . $customer->id . '/resend-verify-email');
 
         $response->assertOk();
         $response->assertJson(['success' => true]);
@@ -233,7 +235,7 @@ class UserTest extends TestCase
         $user  = factory(User::class)->create();
         $token = $this->loginToken();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', "api/user-management/admin/users/{$user->id}/verify-email");
+        $response = $this->json('PUT', "api/user-management/admin/users/{$user->id}/verify-email");
 
         $data                   = $user->toArray();
         $data['email_verified'] = true;
@@ -254,7 +256,7 @@ class UserTest extends TestCase
         $user  = factory(User::class)->create();
         $token = $this->loginToken();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', "api/user-management/admin/users/{$user->id}/verify-email");
+        $response = $this->json('PUT', "api/user-management/admin/users/{$user->id}/verify-email");
 
         $data                   = $user->toArray();
         $data['email_verified'] = true;
@@ -276,11 +278,11 @@ class UserTest extends TestCase
 
         $customer = factory(User::class)->create();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/' . $customer->id . '/resend-password');
+        $response = $this->json('PUT', 'api/user-management/admin/users/' . $customer->id . '/resend-password');
 
         $this->assertValidation($response, 'reset_password_url', 'The reset password url field is required.');
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/' . $customer->id . '/resend-password', ['reset_password_url' => 'the_reset_password_url']);
+        $response = $this->json('PUT', 'api/user-management/admin/users/' . $customer->id . '/resend-password', ['reset_password_url' => 'the_reset_password_url']);
 
         $response->assertOk();
         $response->assertJson(['success' => true]);
@@ -291,15 +293,15 @@ class UserTest extends TestCase
      */
     public function can_update_avatar_customer_by_admin_api_router()
     {
-        $token    = $this->loginToken();
+        Passport::actingAs(factory(User::class)->create());
         $customer = factory(User::class)->create();
 
         $request  = [];
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/' . $customer->id . '/avatar', $request);
+        $response = $this->json('PUT', 'api/user-management/admin/users/' . $customer->id . '/avatar', $request);
         $this->assertValidation($response, 'avatar', "The avatar field is required.");
 
         $request  = ['avatar' => 'avatar'];
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/' . $customer->id . '/avatar', $request);
+        $response = $this->json('PUT', 'api/user-management/admin/users/' . $customer->id . '/avatar', $request);
 
         $response->assertOk();
         $response->assertJson(['success' => true]);
@@ -319,7 +321,7 @@ class UserTest extends TestCase
             return $e;
         })->toArray();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/user-management/admin/users');
+        $response = $this->json('GET', 'api/user-management/admin/users');
 
         $response->assertOk();
         $response->assertJsonStructure([
@@ -349,7 +351,7 @@ class UserTest extends TestCase
             return $e;
         })->toArray();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/user-management/admin/users/all');
+        $response = $this->json('GET', 'api/user-management/admin/users/all');
 
         $response->assertOk();
         $response->assertJsonMissingExact([
@@ -370,9 +372,11 @@ class UserTest extends TestCase
      */
     public function can_create_user_by_admin_api_router()
     {
-        $token    = $this->loginToken();
+        $user = factory(User::class)->create();
+        $user->attachRole(factory(Role::class)->create(['slug' => 'admin']));
+        Passport::actingAs($user);
         $request  = [];
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/user-management/admin/users', $request);
+        $response = $this->json('POST', 'api/user-management/admin/users', $request);
 
         $this->assertValidation($response, 'email', "The email field is required.");
         $this->assertValidation($response, 'password', "The password field is required.");
@@ -388,13 +392,13 @@ class UserTest extends TestCase
             'last_name'  => 'last_name',
         ];
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/user-management/admin/users', $request);
+        $response = $this->json('POST', 'api/user-management/admin/users', $request);
 
         $this->assertValidation($response, 'email', "The email must be a valid email address.");
 
         $request['email'] = 'test@gmail.com';
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('POST', 'api/user-management/admin/users', $request);
+        $response = $this->json('POST', 'api/user-management/admin/users', $request);
 
         $response->assertOk();
         $response->assertJson(['data' => [
@@ -410,10 +414,12 @@ class UserTest extends TestCase
      */
     public function can_show_user_by_admin_api_router()
     {
-        $token    = $this->loginToken();
+        $user = factory(User::class)->create();
+        $user->attachRole(factory(Role::class)->create(['slug' => 'admin']));
+        Passport::actingAs($user);
         $customer = factory(User::class)->create();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/user-management/admin/users/' . $customer->id);
+        $response = $this->json('GET', 'api/user-management/admin/users/' . $customer->id);
 
         $response->assertOk();
         $response->assertJson(['data' => [
@@ -429,10 +435,12 @@ class UserTest extends TestCase
      */
     public function can_update_a_user_by_admin_api_router()
     {
-        $token    = $this->loginToken();
+        $user = factory(User::class)->create();
+        $user->attachRole(factory(Role::class)->create(['slug' => 'admin']));
+        Passport::actingAs($user);
         $customer = factory(User::class)->create();
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/user-management/admin/users/' . $customer->id);
+        $response = $this->json('GET', 'api/user-management/admin/users/' . $customer->id);
 
         $response->assertOk();
         $response->assertJson(['data' => [
@@ -449,7 +457,7 @@ class UserTest extends TestCase
             'last_name'  => 'nameLast',
         ];
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/' . $customer->id, $request);
+        $response = $this->json('PUT', 'api/user-management/admin/users/' . $customer->id, $request);
 
         $response->assertOk();
         $response->assertJson(['data' => [
@@ -463,18 +471,20 @@ class UserTest extends TestCase
      */
     public function can_delete_user_by_admin_api_router()
     {
-        $token    = $this->loginToken();
+        $user = factory(User::class)->create();
+        $user->attachRole(factory(Role::class)->create(['slug' => 'admin']));
+        Passport::actingAs($user);
         $customer = factory(User::class)->create()->toArray();
 
         unset($customer['updated_at']);
         unset($customer['created_at']);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('DELETE', 'api/user-management/admin/users/' . $customer['id']);
+        $response = $this->json('DELETE', 'api/user-management/admin/users/' . $customer['id']);
 
         $response->assertOk();
         $response->assertJson(['success' => true]);
 
-        $this->assertDeleted('users', $customer);
+        $this->assertDatabaseMissing('users', $customer);
     }
 
     /**
@@ -482,7 +492,9 @@ class UserTest extends TestCase
      */
     public function can_bulk_update_status_users_by_admin_api_router()
     {
-        $token     = $this->loginToken();
+        $user = factory(User::class)->create();
+        $user->attachRole(factory(Role::class)->create(['slug' => 'admin']));
+        Passport::actingAs($user);
         $customers = factory(User::class, 5)->create();
 
         $customers = $customers->map(function ($e) {
@@ -494,16 +506,16 @@ class UserTest extends TestCase
         $listIds = array_column($customers, 'id');
         $data    = ['ids' => $listIds, 'status' => 5];
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/user-management/admin/users/all');
+        $response = $this->json('GET', 'api/user-management/admin/users/all');
 
         $response->assertJsonFragment(['status' => 0]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/status/bulk', $data);
+        $response = $this->json('PUT', 'api/user-management/admin/users/status/bulk', $data);
 
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/user-management/admin/users/all');
+        $response = $this->json('GET', 'api/user-management/admin/users/all');
         $response->assertJsonFragment(['status' => 5]);
     }
 
@@ -512,7 +524,9 @@ class UserTest extends TestCase
      */
     public function can_update_status_a_user_by_admin_api_router()
     {
-        $token    = $this->loginToken();
+        $user = factory(User::class)->create();
+        $user->attachRole(factory(Role::class)->create(['slug' => 'admin']));
+        Passport::actingAs($user);
         $customer = factory(User::class)->create()->toArray();
 
         unset($customer['updated_at']);
@@ -520,16 +534,16 @@ class UserTest extends TestCase
 
         $request = ['status' => 5];
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/user-management/admin/users/' . $customer['id']);
+        $response = $this->json('GET', 'api/user-management/admin/users/' . $customer['id']);
 
         $response->assertJson(['data' => ['status' => 0]]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/' . $customer['id'] . '/status', $request);
+        $response = $this->json('PUT', 'api/user-management/admin/users/' . $customer['id'] . '/status', $request);
 
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('GET', 'api/user-management/admin/users/' . $customer['id']);
+        $response = $this->json('GET', 'api/user-management/admin/users/' . $customer['id']);
         $response->assertJsonFragment(['status' => 5]);
     }
 
@@ -538,7 +552,7 @@ class UserTest extends TestCase
      */
     public function can_change_password_a_user_by_admin_api_router()
     {
-        $token    = $this->loginToken();
+        Passport::actingAs(factory(User::class)->create());
         $customer = factory(User::class)->create()->toArray();
 
         unset($customer['updated_at']);
@@ -546,7 +560,7 @@ class UserTest extends TestCase
 
         $request = [];
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/' . $customer['id'] . '/password', $request);
+        $response = $this->json('PUT', 'api/user-management/admin/users/' . $customer['id'] . '/password', $request);
 
         $this->assertValidation($response, 'new_password', "The new password field is required.");
         $this->assertValidation($response, 'new_password_confirmation', "The new password confirmation field is required.");
@@ -556,7 +570,7 @@ class UserTest extends TestCase
             'new_password_confirmation' => 'new_password_confirmation',
         ];
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/' . $customer['id'] . '/password', $request);
+        $response = $this->json('PUT', 'api/user-management/admin/users/' . $customer['id'] . '/password', $request);
 
         $response->assertJson(['message' => 'The password and confirmation do not match']);
 
@@ -565,7 +579,7 @@ class UserTest extends TestCase
             'new_password_confirmation' => 'new_password',
         ];
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->json('PUT', 'api/user-management/admin/users/' . $customer['id'] . '/password', $request);
+        $response = $this->json('PUT', 'api/user-management/admin/users/' . $customer['id'] . '/password', $request);
 
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);

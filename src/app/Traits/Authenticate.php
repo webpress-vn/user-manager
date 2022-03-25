@@ -5,15 +5,12 @@ namespace VCComponent\Laravel\User\Traits;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use Tymon\JWTAuth\Exceptions\TokenInvalidException;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use VCComponent\Laravel\User\Contracts\AuthValidatorInterface;
 use VCComponent\Laravel\User\Events\UserLoggedInEvent;
 use VCComponent\Laravel\User\Events\UserRegisteredBySocialAccountEvent;
@@ -29,7 +26,7 @@ trait Authenticate
         $this->repository = $repository;
         $this->validator  = $validator;
         $this->entity     = $repository->getEntity();
-        $this->middleware('jwt.auth', ['except' => ['authenticate', 'socialLogin', 'saveOrUpdateUser', 'refresh']]);
+        $this->middleware('auth:api', ['except' => ['authenticate', 'socialLogin', 'saveOrUpdateUser', 'refresh']]);
 
         if (isset(config('user.transformers')['user'])) {
             $this->transformer = config('user.transformers.user');
@@ -42,12 +39,11 @@ trait Authenticate
     {
         try {
             $user = VCCAuth::authenticate($request);
-
-            $token = JWTAuth::fromUser($user);
+            $token = $user->createToken(['authenticate'])->accessToken;
 
             event(new UserLoggedInEvent($user));
 
-        } catch (JWTException $e) {
+        } catch (\Exception $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
@@ -75,9 +71,10 @@ trait Authenticate
 
     public function invalidateToken() {
         try {
-           return response()->json(JWTAuth::invalidate());
+            $user = Auth::user()->token()->revoke();
+           return $this->success();
 
-        } catch (JWTException $e) {
+        } catch (\Exception $e) {
             return response()->json(['message' => 'Logout failed'], $e->getStatusCode());
         }
     }
@@ -86,22 +83,13 @@ trait Authenticate
     {
         try {
 
-            $user = JWTAuth::parseToken()->authenticate();
+            $user = $request->user();
             if (!$user) {
                 throw new NotFoundException('User');
             }
 
-        } catch (TokenExpiredException $e) {
-
-            return response()->json(['message' => 'token expired'], $e->getStatusCode());
-
-        } catch (TokenInvalidException $e) {
-
+        } catch (\Exception $e) {
             return response()->json(['message' => 'token invalid'], $e->getStatusCode());
-
-        } catch (JWTException $e) {
-
-            return response()->json(['message' => 'token absent'], $e->getStatusCode());
 
         }
 
@@ -197,6 +185,7 @@ trait Authenticate
 
         $data = $request->only(['old_password', 'new_password', 'new_password_confirmation']);
         if (!Hash::check($data['old_password'], $user->password)) {
+            dd($data['old_password'], $user->password);
             throw new BadRequestHttpException('Old password does not match');
         }
         if ($data['new_password'] !== $data['new_password_confirmation']) {

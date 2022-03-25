@@ -27,9 +27,8 @@ class TestCase extends OrchestraTestCase
             UserComponentEventProvider::class,
             LaravelServiceProvider::class,
             RolesServiceProvider::class,
-            \Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-            \Illuminate\Auth\AuthServiceProvider::class,
             \Laravel\Socialite\SocialiteServiceProvider::class,
+            \Laravel\Passport\PassportServiceProvider::class,
         ];
     }
 
@@ -41,6 +40,8 @@ class TestCase extends OrchestraTestCase
         parent::setUp();
         $this->withFactories(__DIR__ . '/../src/database/factories');
         // $this->loadMigrationsFrom(__DIR__ . '/../src/database/migrations');
+        \Artisan::call('migrate',['-vvv' => true]);
+        \Artisan::call('passport:install',['-vvv' => true]);
     }
 
     /**
@@ -53,20 +54,13 @@ class TestCase extends OrchestraTestCase
     {
         // Setup default database to use sqlite :memory:
         $app['config']->set('app.key', 'base64:TEQ1o2POo+3dUuWXamjwGSBx/fsso+viCCg9iFaXNUA=');
+        $app['config']->set('passport.storage.database.connection', 'testbench');
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
             'driver'   => 'sqlite',
             'database' => ':memory:',
             'prefix'   => '',
         ]);
-        // $app['config']->set('database.connections.testbench', [
-        //     'driver'   => 'mysql',
-        //     'host'     => 'localhost',
-        //     'port'     => 3306,
-        //     'database' => 'test_user',
-        //     'username' => 'root',
-        //     'password' => '1111',
-        // ]);
         $app['config']->set('api', [
             'standardsTree'      => 'x',
             'subtype'            => '',
@@ -153,14 +147,22 @@ class TestCase extends OrchestraTestCase
         ]);
         $app['config']->set('auth.providers.users.model', User::class);
         $app['config']->set('repository.cache.enabled', false);
-        $app['config']->set('jwt.secret', 'Mxw35fL1E0kQgQB3bmbH1iZnUo1PcJrtQB7j9qUDqbqgHzyz7z0hHfJbC7wWyFgU');
+        $app['config']->set('auth.guards', [
+            'web' => [
+                'driver' => 'session',
+                'provider' => 'users',
+            ],   
+            'api' => [
+                'driver' => 'token',
+                'provider' => 'users',
+            ],
+        ]);
     }
 
     public function assertValidation($response, $field, $error_message)
     {
         $response->assertStatus(422);
         $response->assertJson([
-            'message' => 'The given data was invalid.',
             "errors"  => [
                 $field => [
                     $error_message,
